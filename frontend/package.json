@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "echo \"No frontend tests configured yet\" && exit 0",
     "build": "vite build",
     "preview": "vite preview"
   },
