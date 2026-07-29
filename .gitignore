@@ -1,0 +1,30 @@
+# --- Environment / secrets ---
+.env
+*.env.local
+
+# --- Backend (Java / Maven) ---
+backend/target/
+backend/.mvn/
+backend/*.iml
+backend/HELP.md
+*.class
+
+# --- Frontend (Node / React) ---
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env.local
+frontend/npm-debug.log*
+frontend/yarn-error.log*
+
+# --- IDE ---
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# --- Docker ---
+docker-compose.override.yml
+
+# --- OS ---
+Thumbs.db
