@@ -11,7 +11,7 @@ export default function DashboardPage() {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h2>Dashboard</h2>
+      <h2>Hi all</h2>
       <div style={{ display: 'grid', gap: '1rem' }}>
         {decisions.map((decision) => (
           <DecisionCard key={decision.id} decision={decision} />

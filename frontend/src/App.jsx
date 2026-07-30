@@ -6,7 +6,7 @@ function Home() {
     <div style={{ fontFamily: 'sans-serif', padding: '2rem' }}>
       <h1>DecisionHub</h1>
       <p>Sample frontend for the decision-making platform.</p>
-      <Link to="/dashboard">Go to dashboard</Link>
+      <Link to="/dashboard">Go to   hi idn dashboard</Link>
     </div>
   );
 }
