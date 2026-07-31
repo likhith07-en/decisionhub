@@ -1,23 +1,158 @@
-DecisionHub ER Diagram
-=====================
-Users
-- id
-- name
-- email
+DecisionHub ER Diagram & Schema Design
+========================================
 
-Decisions
-- id
-- title
-- status
-- created_at
+ER Diagram (Text Format)
+-------------------------
+users (1) ───< decisions (1) ───< decision_options (1) ───< comparison_factors
+  |                  |                     |
+  |                  |                     └───< option_scores
+  |                  |
+  |                  ├───< polls (1) ───< poll_options (1) ───< votes >─── users
+  |                  └───< comments (self-referencing parent_id) >─── users
+  |
+  ├───< user_profiles (1:1)
+  ├───< user_interests >─── categories
+  ├───< community_members >─── communities
+  ├───< notifications
+  └───< moderation_flags
 
-Polls
-- id
-- decision_id
-- question
 
-Votes
-- id
-- poll_id
-- user_id
-- option
+Tables (16 Total)
+==================
+
+1. users
+   - id (BIGINT PK, AUTO_INCREMENT)
+   - email (VARCHAR(150), UNIQUE, NOT NULL)
+   - password_hash (VARCHAR(255), BCrypt hash)
+   - full_name (VARCHAR(100))
+   - role (VARCHAR(20): USER / MODERATOR / ADMIN)
+   - provider (VARCHAR(20): LOCAL / GOOGLE)
+   - created_at (TIMESTAMP, default now())
+   - is_active (BOOLEAN, default true)
+
+2. user_profiles
+   - id (BIGINT PK)
+   - user_id (BIGINT FK -> users.id, UNIQUE)
+   - bio (TEXT)
+   - avatar_url (VARCHAR(255))
+
+3. categories
+   - id (BIGINT PK)
+   - name (VARCHAR(50): Career, Education, Technology, Travel, Finance, Lifestyle)
+
+4. user_interests (Junction Table)
+   - user_id (FK -> users.id)
+   - category_id (FK -> categories.id)
+   - PK(user_id, category_id)
+
+5. communities
+   - id (BIGINT PK)
+   - name (VARCHAR(100), UNIQUE)
+   - category_id (BIGINT FK -> categories.id)
+   - description (TEXT)
+   - created_by (BIGINT FK -> users.id)
+
+6. community_members
+   - id (BIGINT PK)
+   - community_id (BIGINT FK -> communities.id)
+   - user_id (BIGINT FK -> users.id)
+   - role (VARCHAR(20): MEMBER / MODERATOR)
+   - UNIQUE(community_id, user_id)
+
+7. decisions
+   - id (BIGINT PK)
+   - owner_id (BIGINT FK -> users.id)
+   - title (VARCHAR(150), NOT NULL)
+   - description (TEXT)
+   - visibility (VARCHAR(10): PUBLIC / PRIVATE)
+   - category_id (BIGINT FK -> categories.id)
+   - created_at (TIMESTAMP)
+   - is_deleted (BOOLEAN, soft delete)
+
+8. decision_options
+   - id (BIGINT PK)
+   - decision_id (BIGINT FK -> decisions.id)
+   - label (VARCHAR(150), e.g. "MBA", "Job")
+   - description (TEXT)
+
+9. comparison_factors
+   - id (BIGINT PK)
+   - decision_id (BIGINT FK -> decisions.id)
+   - name (VARCHAR(50): Cost, Risk, Time, etc.)
+
+10. option_scores
+    - id (BIGINT PK)
+    - option_id (BIGINT FK -> decision_options.id)
+    - factor_id (BIGINT FK -> comparison_factors.id)
+    - score (INT, 1-10)
+
+11. polls
+    - id (BIGINT PK)
+    - decision_id (BIGINT FK -> decisions.id)
+    - poll_type (VARCHAR(20): SINGLE / MULTI / RATING)
+    - is_anonymous (BOOLEAN)
+    - ends_at (TIMESTAMP)
+
+12. poll_options
+    - id (BIGINT PK)
+    - poll_id (BIGINT FK -> polls.id)
+    - option_id (BIGINT FK -> decision_options.id)
+
+13. votes
+    - id (BIGINT PK)
+    - poll_id (BIGINT FK -> polls.id)
+    - poll_option_id (BIGINT FK -> poll_options.id)
+    - voter_id (BIGINT FK -> users.id, nullable if anonymous)
+    - rating (INT, used only for RATING polls)
+    - voted_at (TIMESTAMP)
+    - UNIQUE(poll_id, voter_id) — prevents duplicate votes
+
+14. comments
+    - id (BIGINT PK)
+    - decision_id (BIGINT FK -> decisions.id)
+    - author_id (BIGINT FK -> users.id)
+    - parent_id (BIGINT FK -> comments.id, nullable, self-referencing)
+    - content (VARCHAR(2000))
+    - created_at (TIMESTAMP)
+    - is_flagged (BOOLEAN)
+
+15. notifications
+    - id (BIGINT PK)
+    - user_id (BIGINT FK -> users.id, recipient)
+    - type (VARCHAR(30): NEW_COMMENT / NEW_VOTE / etc.)
+    - message (VARCHAR(255))
+    - is_read (BOOLEAN, default false)
+    - created_at (TIMESTAMP)
+
+16. moderation_flags
+    - id (BIGINT PK)
+    - target_type (VARCHAR(20): COMMENT / DECISION)
+    - target_id (BIGINT)
+    - reported_by (BIGINT FK -> users.id)
+    - reason (VARCHAR(255))
+    - status (VARCHAR(20): PENDING / RESOLVED)
+
+
+Relationships Summary
+======================
+- One user -> many decisions, votes, comments, notifications (1:N)
+- One decision -> many options, one owner, many comments, optional polls (1:N)
+- One poll -> many poll_options -> many votes (1:N:N)
+- Many users <-> many communities via community_members (M:N)
+
+
+Indexes
+========
+- users(email) — unique index for login lookups
+- decisions(owner_id), decisions(category_id) — filter/search performance
+- votes(poll_id), votes(voter_id) — vote counting and duplicate checks
+- comments(decision_id), comments(parent_id) — thread loading
+- community_members(community_id, user_id) — unique + membership checks
+
+
+Normalization: 3NF
+===================
+- No repeating groups (options, factors, votes are separate tables, not comma-lists).
+- Non-key attributes depend only on the primary key (e.g. option_scores isolates the
+  score from both option and factor rather than duplicating factor names per option).
+- Lookup data (categories) is separated to avoid duplicate strings.
