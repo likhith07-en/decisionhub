@@ -1,0 +1,23 @@
+DecisionHub ER Diagram
+=====================
+Users
+- id
+- name
+- email
+
+Decisions
+- id
+- title
+- status
+- created_at
+
+Polls
+- id
+- decision_id
+- question
+
+Votes
+- id
+- poll_id
+- user_id
+- option
