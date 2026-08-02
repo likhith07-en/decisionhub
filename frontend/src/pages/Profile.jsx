@@ -1,69 +1,115 @@
-import React from 'react';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { User, Mail, Shield, Calendar, Award } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
+import Footer from '../components/Footer';
+import IconSidebar from '../components/IconSidebar';
 
-const Profile = () => {
+export default function Profile() {
   const { user } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!user) return null;
 
+  const infoTiles = [
+    {
+      label: 'Account Name',
+      value: user.name || '—',
+      icon: (
+        <svg className="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Email Address',
+      value: user.email || '—',
+      icon: (
+        <svg className="h-5 w-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Member Since',
+      value: user.createdAt
+        ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+        : 'Active Member',
+      icon: (
+        <svg className="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Role',
+      value: user.role || 'USER',
+      icon: (
+        <svg className="h-5 w-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      ),
+    },
+  ];
+
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
-        <div className="flex items-center space-x-6">
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white text-3xl font-extrabold shadow-xl shadow-blue-500/20">
-            {user.name?.charAt(0).toUpperCase() || 'U'}
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-white">{user.name}</h1>
-            <p className="text-slate-400 text-sm">{user.email}</p>
-            <div className="mt-2 inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium">
-              <Shield className="w-3.5 h-3.5" />
-              <span>{user.role}</span>
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
+      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <IconSidebar />
+      <div className="flex flex-1">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+          <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
+            <div className="mb-8">
+              <h1 className="text-3xl font-black tracking-tight text-slate-900">Profile</h1>
+              <p className="mt-1 text-slate-500">Your account information and preferences.</p>
+            </div>
+
+            {/* Profile hero card */}
+            <div className="mb-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center gap-5">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name || user.email}
+                    className="h-16 w-16 rounded-full ring-4 ring-blue-100"
+                  />
+                ) : (
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-2xl font-black text-white">
+                    {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                )}
+                <div>
+                  <h2 className="text-xl font-black tracking-tight text-slate-900">{user.name || 'User'}</h2>
+                  <p className="text-sm text-slate-500">{user.email}</p>
+                  <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+                    {user.role || 'USER'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Info tiles */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {infoTiles.map((tile) => (
+                <div
+                  key={tile.label}
+                  className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                >
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50">
+                    {tile.icon}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-slate-500">{tile.label}</p>
+                    <p className="text-sm font-semibold text-slate-900">{tile.value}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-
-        <hr className="border-slate-800" />
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/60 flex items-center space-x-3">
-            <User className="w-5 h-5 text-blue-400" />
-            <div>
-              <p className="text-xs text-slate-500 font-medium">Account Name</p>
-              <p className="text-sm font-semibold text-white">{user.name}</p>
-            </div>
-          </div>
-
-          <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/60 flex items-center space-x-3">
-            <Mail className="w-5 h-5 text-purple-400" />
-            <div>
-              <p className="text-xs text-slate-500 font-medium">Email Address</p>
-              <p className="text-sm font-semibold text-white">{user.email}</p>
-            </div>
-          </div>
-
-          <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/60 flex items-center space-x-3">
-            <Calendar className="w-5 h-5 text-emerald-400" />
-            <div>
-              <p className="text-xs text-slate-500 font-medium">Member Since</p>
-              <p className="text-sm font-semibold text-white">
-                {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Active Member'}
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/60 flex items-center space-x-3">
-            <Award className="w-5 h-5 text-amber-400" />
-            <div>
-              <p className="text-xs text-slate-500 font-medium">Voting Privileges</p>
-              <p className="text-sm font-semibold text-emerald-400">Verified Contributor</p>
-            </div>
-          </div>
-        </div>
+          <Footer />
+        </main>
       </div>
     </div>
   );
-};
-
-export default Profile;
+}

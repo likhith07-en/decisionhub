@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { decisionService } from '../services/decisionService';
-import { voteService } from '../services/voteService';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { fetchDecisionById, castVoteApi, getVoteResultsApi } from '../api/axiosClient';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
+import Footer from '../components/Footer';
+import IconSidebar from '../components/IconSidebar';
 import PollCard from '../components/PollCard';
 import ResultChart from '../components/ResultChart';
 import Loader from '../components/Loader';
-import { ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 
-const VotePage = () => {
+export default function VotePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { accessToken } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [decision, setDecision] = useState(null);
   const [selectedOptionId, setSelectedOptionId] = useState(null);
@@ -27,12 +32,15 @@ const VotePage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const dec = await decisionService.getDecisionById(id);
+      const dec = await fetchDecisionById(id, accessToken);
       setDecision(dec);
-
-      const res = await voteService.getVoteResults(id);
-      setResults(res);
-    } catch (err) {
+      try {
+        const res = await getVoteResultsApi(id, accessToken);
+        setResults(res);
+      } catch {
+        /* results optional */
+      }
+    } catch {
       setError('Could not load decision or poll details.');
     } finally {
       setLoading(false);
@@ -45,76 +53,96 @@ const VotePage = () => {
     setSubmitting(true);
 
     try {
-      await voteService.castVote({
-        decisionId: Number(id),
-        optionId: selectedOptionId,
-      });
-
-      setSuccessMsg('Your vote has been officially recorded!');
+      await castVoteApi({ decisionId: Number(id), optionId: selectedOptionId }, accessToken);
+      setSuccessMsg('Your vote has been recorded!');
       setHasVoted(true);
-
-      // Refresh poll results immediately
-      const updatedResults = await voteService.getVoteResults(id);
+      const updatedResults = await getVoteResultsApi(id, accessToken);
       setResults(updatedResults);
     } catch (err) {
-      if (err.response?.status === 409 || err.response?.data?.message?.includes('already voted')) {
+      if (err.message?.includes('already voted') || err.message?.includes('409')) {
         setError('You have already voted on this decision.');
         setHasVoted(true);
       } else {
-        setError(err.response?.data?.message || 'Failed to submit vote.');
+        setError(err.message || 'Failed to submit vote. Please try again.');
       }
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading) return <Loader message="Preparing voting session..." />;
-
-  if (!decision) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-slate-400">Decision not found.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <button
-        onClick={() => navigate(`/decisions/${id}`)}
-        className="inline-flex items-center space-x-2 text-sm text-slate-400 hover:text-white transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Back to Decision Details</span>
-      </button>
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
+      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <IconSidebar />
+      <div className="flex flex-1">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+          <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
+            {loading ? (
+              <Loader message="Preparing voting session..." />
+            ) : !decision ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center">
+                <p className="mb-4 text-slate-500">Decision not found.</p>
+                <Link to="/dashboard" className="text-sm font-bold text-blue-600 hover:underline">Return to Dashboard</Link>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Back link */}
+                <Link
+                  to={`/decisions/${id}`}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"
+                >
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Back to Decision
+                </Link>
 
-      {error && (
-        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm flex items-center space-x-3">
-          <AlertCircle className="w-5 h-5 shrink-0" />
-          <span>{error}</span>
-        </div>
-      )}
+                {/* Page title */}
+                <div>
+                  <h1 className="text-3xl font-black tracking-tight text-slate-900">Cast Your Vote</h1>
+                  <p className="mt-1 text-slate-500">{decision.title}</p>
+                </div>
 
-      {successMsg && (
-        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm flex items-center space-x-3">
-          <CheckCircle className="w-5 h-5 shrink-0" />
-          <span>{successMsg}</span>
-        </div>
-      )}
+                {/* Error */}
+                {error && (
+                  <div className="flex items-center gap-3 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-700">
+                    <svg className="h-5 w-5 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <span>{error}</span>
+                  </div>
+                )}
 
-      <PollCard
-        poll={decision.poll}
-        decisionId={decision.id}
-        selectedOptionId={selectedOptionId}
-        onSelectOption={(optId) => setSelectedOptionId(optId)}
-        onVote={handleVote}
-        isSubmitting={submitting}
-        hasVoted={hasVoted}
-      />
+                {/* Success */}
+                {successMsg && (
+                  <div className="flex items-center gap-3 rounded-2xl border border-green-100 bg-green-50 p-4 text-sm text-green-700">
+                    <svg className="h-5 w-5 shrink-0 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>{successMsg}</span>
+                  </div>
+                )}
 
-      {results && <ResultChart results={results} />}
+                {/* Poll */}
+                <PollCard
+                  poll={decision.poll}
+                  decisionId={decision.id}
+                  selectedOptionId={selectedOptionId}
+                  onSelectOption={(optId) => setSelectedOptionId(optId)}
+                  onVote={handleVote}
+                  isSubmitting={submitting}
+                  hasVoted={hasVoted}
+                />
+
+                {/* Results */}
+                {results && <ResultChart results={results} />}
+              </div>
+            )}
+          </div>
+          <Footer />
+        </main>
+      </div>
     </div>
   );
-};
-
-export default VotePage;
+}

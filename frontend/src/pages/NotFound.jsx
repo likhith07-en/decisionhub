@@ -1,27 +1,39 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Vote, ArrowLeft } from 'lucide-react';
 
-const NotFound = () => {
+export default function NotFound() {
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center text-center p-4">
-      <div className="w-16 h-16 rounded-3xl bg-blue-500/10 text-blue-400 flex items-center justify-center mb-6 border border-blue-500/20">
-        <Vote className="w-8 h-8" />
+    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 px-4 text-center">
+      {/* Logo mark */}
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-[2rem] bg-blue-600/10 text-blue-700">
+        <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden="true">
+          <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
+            <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
+            <circle cx="24" cy="10" r="4" fill="currentColor" stroke="none" />
+            <circle cx="38" cy="24" r="4" fill="currentColor" stroke="none" />
+            <circle cx="24" cy="38" r="4" fill="currentColor" stroke="none" />
+            <path d="M13 21L21 13" />
+            <path d="M27 13L35 21" />
+            <path d="M13 27L21 35" />
+            <path d="M27 35L35 27" />
+          </g>
+        </svg>
       </div>
-      <h1 className="text-6xl font-extrabold text-white tracking-tight">404</h1>
-      <h2 className="text-xl font-bold text-slate-300 mt-2">Page Not Found</h2>
-      <p className="text-slate-400 max-w-sm mx-auto mt-2 text-sm">
-        The decision matrix page you are seeking does not exist or has been archived.
+
+      <h1 className="text-7xl font-black tracking-tight text-slate-900">404</h1>
+      <h2 className="mt-2 text-xl font-bold text-slate-700">Page Not Found</h2>
+      <p className="mt-2 max-w-sm text-sm text-slate-500">
+        The page you are looking for does not exist or has been moved.
       </p>
+
       <Link
-        to="/"
-        className="mt-6 inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all"
+        to="/dashboard"
+        className="mt-8 flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
       >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Return to Dashboard</span>
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Return to Dashboard
       </Link>
     </div>
   );
-};
-
-export default NotFound;
+}

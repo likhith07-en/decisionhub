@@ -1,36 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 antialiased font-sans min-h-screen selection:bg-blue-500 selection:text-white;
+    @apply bg-slate-50 text-slate-900 antialiased font-sans min-h-screen selection:bg-blue-500 selection:text-white;
+  }
+
+  * {
+    @apply transition-colors duration-200;
   }
 }
 
-/* Custom Scrollbars */
+/* ─── Custom Scrollbars ─── */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #94a3b8;
 }
 
-/* Gradient Background Mesh */
-.bg-gradient-mesh {
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(147, 51, 234, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+/* ─── Logo Color Shift Animation ─── */
+@keyframes logoColorShift {
+  0% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  25% {
+    filter: hue-rotate(45deg) brightness(1.05);
+  }
+  50% {
+    filter: hue-rotate(90deg) brightness(1.1);
+  }
+  75% {
+    filter: hue-rotate(45deg) brightness(1.05);
+  }
+  100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+}
+
+.logo-color-shift {
+  animation: logoColorShift 3s ease-in-out infinite;
+}
+
+/* ─── Buffer Progress Bar ─── */
+@keyframes bufferProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes bufferShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.buffer-progress {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #3b82f6 20%,
+    #06b6d4 40%,
+    #8b5cf6 60%,
+    #3b82f6 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: bufferShimmer 1.5s ease-in-out infinite;
+}
+
+/* ─── Icon Sidebar Glow ─── */
+@keyframes iconGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+  }
+}
+
+.icon-sidebar-btn {
+  @apply relative flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200/60 bg-white/80 text-slate-500 backdrop-blur-sm transition-all duration-300;
+}
+
+.icon-sidebar-btn:hover {
+  @apply border-blue-200 bg-blue-50/80 text-blue-600 scale-110;
+  animation: iconGlow 2s ease-in-out infinite;
+}
+
+/* ─── Notification Pulse ─── */
+@keyframes notifPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.notif-pulse::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: notifPulse 2s ease-in-out infinite;
+}
+
+.notif-dot::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  z-index: 1;
 }

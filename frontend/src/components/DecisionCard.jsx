@@ -1,78 +1,50 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, User, Vote, CheckCircle2, ArrowRight, MessageSquare } from 'lucide-react';
 
-const DecisionCard = ({ decision }) => {
-  const isClosed = decision.status === 'CLOSED';
+export default function DecisionCard({ decision }) {
+  const statusColors = {
+    OPEN: 'bg-green-100 text-green-700',
+    CLOSED: 'bg-red-100 text-red-700',
+    // Legacy/fallback variants
+    Active: 'bg-green-100 text-green-700',
+    Completed: 'bg-blue-100 text-blue-700',
+    ACTIVE: 'bg-green-100 text-green-700',
+    COMPLETED: 'bg-blue-100 text-blue-700',
+    'In Review': 'bg-amber-100 text-amber-700',
+  };
+
+  const statusClass = statusColors[decision.status] || 'bg-slate-100 text-slate-600';
 
   return (
-    <div className="group relative bg-slate-900/90 border border-slate-800/80 hover:border-slate-700/80 rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5 flex flex-col justify-between">
-      <div>
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <span
-            className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium border ${
-              isClosed
-                ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-            }`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${isClosed ? 'bg-rose-400' : 'bg-emerald-400 animate-pulse'}`} />
-            <span>{decision.status}</span>
-          </span>
-
-          <span className="text-xs text-slate-500 flex items-center space-x-1">
-            <Calendar className="w-3.5 h-3.5" />
-            <span>{new Date(decision.createdAt).toLocaleDateString()}</span>
-          </span>
-        </div>
-
-        <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors line-clamp-1 mb-2">
+    <Link
+      to={`/decisions/${decision.id}`}
+      className="group block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-200 hover:shadow-md"
+    >
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <h3 className="text-base font-bold text-slate-900 transition group-hover:text-blue-600">
           {decision.title}
         </h3>
+        <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusClass}`}>
+          {decision.status}
+        </span>
+      </div>
 
-        <p className="text-slate-400 text-sm line-clamp-2 mb-4 leading-relaxed">
-          {decision.description || 'No description provided.'}
-        </p>
+      {decision.description && (
+        <p className="mb-3 line-clamp-2 text-sm text-slate-500">{decision.description}</p>
+      )}
 
-        {decision.poll && (
-          <div className="mb-4 p-3 rounded-xl bg-slate-950/60 border border-slate-800/50">
-            <div className="flex items-center space-x-2 text-xs text-slate-300 font-medium mb-1">
-              <MessageSquare className="w-3.5 h-3.5 text-indigo-400" />
-              <span className="truncate">{decision.poll.question}</span>
-            </div>
-            <p className="text-xs text-slate-500">
-              {decision.poll.options?.length || 0} Poll Options Available
-            </p>
-          </div>
+      <div className="flex items-center gap-4 text-xs text-slate-400">
+        {decision.votesCount !== undefined && (
+          <span className="flex items-center gap-1">
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            {decision.votesCount} vote{decision.votesCount !== 1 ? 's' : ''}
+          </span>
+        )}
+        {decision.optionsCount !== undefined && (
+          <span>{decision.optionsCount} options</span>
         )}
       </div>
-
-      <div className="pt-4 border-t border-slate-800/60 flex items-center justify-between">
-        <div className="flex items-center space-x-2 text-xs text-slate-400">
-          <div className="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 font-medium">
-            {decision.createdBy?.name?.charAt(0).toUpperCase() || 'U'}
-          </div>
-          <span className="truncate max-w-[100px]">{decision.createdBy?.name || 'Anonymous'}</span>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Link
-            to={`/decisions/${decision.id}`}
-            className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
-          >
-            <span>Details</span>
-          </Link>
-          <Link
-            to={`/decisions/${decision.id}/vote`}
-            className="inline-flex items-center space-x-1 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors shadow-sm shadow-blue-500/20"
-          >
-            <Vote className="w-3.5 h-3.5" />
-            <span>Vote</span>
-          </Link>
-        </div>
-      </div>
-    </div>
+    </Link>
   );
-};
-
-export default DecisionCard;
+}

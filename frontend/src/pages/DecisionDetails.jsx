@@ -1,26 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { decisionService } from '../services/decisionService';
-import { voteService } from '../services/voteService';
 import { useAuth } from '../context/AuthContext';
+import { fetchDecisionById, deleteDecisionApi, getVoteResultsApi } from '../api/axiosClient';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
+import Footer from '../components/Footer';
+import IconSidebar from '../components/IconSidebar';
 import ResultChart from '../components/ResultChart';
 import Loader from '../components/Loader';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  User, 
-  Vote, 
-  Trash2, 
-  CheckCircle2,
-  Clock,
-  Sparkles,
-  BarChart2
-} from 'lucide-react';
 
-const DecisionDetails = () => {
+export default function DecisionDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [decision, setDecision] = useState(null);
   const [results, setResults] = useState(null);
@@ -35,14 +28,17 @@ const DecisionDetails = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const dec = await decisionService.getDecisionById(id);
+      const dec = await fetchDecisionById(id, accessToken);
       setDecision(dec);
-
       if (dec.poll) {
-        const res = await voteService.getVoteResults(id);
-        setResults(res);
+        try {
+          const res = await getVoteResultsApi(id, accessToken);
+          setResults(res);
+        } catch {
+          /* results optional */
+        }
       }
-    } catch (err) {
+    } catch {
       setError('Decision not found or could not be loaded.');
     } finally {
       setLoading(false);
@@ -53,104 +49,120 @@ const DecisionDetails = () => {
     if (!window.confirm('Are you sure you want to delete this decision?')) return;
     try {
       setDeleting(true);
-      await decisionService.deleteDecision(id);
-      navigate('/');
-    } catch (err) {
+      await deleteDecisionApi(id, accessToken);
+      navigate('/dashboard');
+    } catch {
       alert('Failed to delete decision.');
     } finally {
       setDeleting(false);
     }
   };
 
-  if (loading) return <Loader message="Loading decision details..." />;
+  const isCreator = user && decision?.createdBy && user.id === decision.createdBy.id;
 
-  if (error || !decision) {
-    return (
-      <div className="text-center py-16">
-        <h2 className="text-xl font-bold text-white mb-2">{error || 'Decision not found'}</h2>
-        <Link to="/" className="text-blue-400 font-semibold hover:underline">
-          Return to Dashboard
-        </Link>
-      </div>
-    );
-  }
-
-  const isCreator = user && decision.createdBy && user.id === decision.createdBy.id;
+  const statusColors = {
+    OPEN: 'bg-green-100 text-green-700',
+    CLOSED: 'bg-red-100 text-red-700',
+    OPEN_TO_VOTE: 'bg-green-100 text-green-700',
+  };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => navigate('/')}
-          className="inline-flex items-center space-x-2 text-sm text-slate-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Decisions</span>
-        </button>
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
+      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <IconSidebar />
+      <div className="flex flex-1">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+          <div className="flex-1 max-w-4xl w-full mx-auto px-6 py-8">
+            {loading ? (
+              <Loader message="Loading decision details..." />
+            ) : error || !decision ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center">
+                <p className="mb-4 text-slate-500">{error || 'Decision not found.'}</p>
+                <Link to="/dashboard" className="text-sm font-bold text-blue-600 hover:underline">
+                  Return to Dashboard
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Top bar */}
+                <div className="flex items-center justify-between">
+                  <Link
+                    to="/dashboard"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back to Dashboard
+                  </Link>
 
-        {isCreator && (
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-semibold border border-rose-500/20 transition-colors"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            <span>{deleting ? 'Deleting...' : 'Delete Decision'}</span>
-          </button>
-        )}
+                  {isCreator && (
+                    <button
+                      onClick={handleDelete}
+                      disabled={deleting}
+                      className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 text-xs font-bold text-red-600 transition hover:bg-red-100 disabled:opacity-60"
+                    >
+                      {deleting ? 'Deleting...' : 'Delete Decision'}
+                    </button>
+                  )}
+                </div>
+
+                {/* Decision card */}
+                <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+                  {/* Status + title */}
+                  <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 pb-5">
+                    <div>
+                      <span className={`mb-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusColors[decision.status] || 'bg-slate-100 text-slate-600'}`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${decision.status === 'CLOSED' ? 'bg-red-500' : 'bg-green-500'}`} />
+                        {decision.status}
+                      </span>
+                      <h1 className="text-3xl font-black tracking-tight text-slate-900">{decision.title}</h1>
+                    </div>
+
+                    {decision.status === 'OPEN' && decision.poll && (
+                      <Link
+                        to={`/decisions/${id}/vote`}
+                        className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Cast / View Vote
+                      </Link>
+                    )}
+                  </div>
+
+                  {/* Meta */}
+                  <div className="flex flex-wrap items-center gap-6 text-xs text-slate-400">
+                    {decision.createdBy?.name && (
+                      <span>
+                        Created by{' '}
+                        <strong className="font-semibold text-slate-600">{decision.createdBy.name}</strong>
+                      </span>
+                    )}
+                    {decision.createdAt && (
+                      <span>{new Date(decision.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    )}
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-slate-600">Description</p>
+                    <p className="text-sm leading-relaxed text-slate-500 whitespace-pre-line">
+                      {decision.description || 'No description provided.'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Results */}
+                {results && <ResultChart results={results} />}
+              </div>
+            )}
+          </div>
+          <Footer />
+        </main>
       </div>
-
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-6">
-          <div>
-            <span
-              className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-medium border mb-3 ${
-                decision.status === 'CLOSED'
-                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                  : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-              }`}
-            >
-              <span className={`w-1.5 h-1.5 rounded-full ${decision.status === 'CLOSED' ? 'bg-rose-400' : 'bg-emerald-400 animate-pulse'}`} />
-              <span>{decision.status}</span>
-            </span>
-
-            <h1 className="text-3xl font-extrabold text-white tracking-tight">{decision.title}</h1>
-          </div>
-
-          <Link
-            to={`/decisions/${id}/vote`}
-            className="inline-flex items-center space-x-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-500/20"
-          >
-            <Vote className="w-4 h-4" />
-            <span>Cast / View Vote</span>
-          </Link>
-        </div>
-
-        <div className="flex items-center space-x-6 text-xs text-slate-400">
-          <div className="flex items-center space-x-2">
-            <User className="w-4 h-4 text-blue-400" />
-            <span>Created by <strong className="text-slate-200">{decision.createdBy?.name}</strong></span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Calendar className="w-4 h-4 text-purple-400" />
-            <span>Created on {new Date(decision.createdAt).toLocaleDateString()}</span>
-          </div>
-        </div>
-
-        <div className="prose prose-invert max-w-none">
-          <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Description</h3>
-          <p className="text-slate-300 leading-relaxed whitespace-pre-line text-base">
-            {decision.description || 'No additional description provided.'}
-          </p>
-        </div>
-      </div>
-
-      {/* Live Poll Results Section */}
-      {results && (
-        <ResultChart results={results} />
-      )}
     </div>
   );
-};
-
-export default DecisionDetails;
+}

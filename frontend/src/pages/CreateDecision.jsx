@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { decisionService } from '../services/decisionService';
-import { PlusCircle, Trash2, ArrowLeft, Vote, Sparkles, Check } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import { createDecisionApi } from '../api/axiosClient';
+import Navbar from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
+import Footer from '../components/Footer';
+import IconSidebar from '../components/IconSidebar';
 
-const CreateDecision = () => {
+export default function CreateDecision() {
   const navigate = useNavigate();
+  const { accessToken } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('OPEN');
   const [pollQuestion, setPollQuestion] = useState('');
-  const [pollOptions, setPollOptions] = useState(['Option 1', 'Option 2']);
-
+  const [pollOptions, setPollOptions] = useState(['', '']);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   const handleAddOption = () => {
-    setPollOptions([...pollOptions, `Option ${pollOptions.length + 1}`]);
+    if (pollOptions.length < 8) {
+      setPollOptions([...pollOptions, '']);
+    }
   };
 
   const handleOptionChange = (index, value) => {
@@ -38,182 +46,197 @@ const CreateDecision = () => {
     e.preventDefault();
     setError('');
 
-    if (pollQuestion.trim() && pollOptions.filter(o => o.trim()).length < 2) {
-      setError('Please provide at least 2 valid poll options.');
+    const trimmedOptions = pollOptions.map((o) => o.trim()).filter(Boolean);
+    if (pollQuestion.trim() && trimmedOptions.length < 2) {
+      setError('Please provide at least 2 poll options.');
       return;
     }
 
     setSubmitting(true);
-
     try {
       const payload = {
-        title,
-        description,
+        title: title.trim(),
+        description: description.trim(),
         status,
-        pollQuestion: pollQuestion.trim() ? pollQuestion : null,
-        pollOptions: pollQuestion.trim() ? pollOptions.filter(o => o.trim()) : null,
+        pollQuestion: pollQuestion.trim() || null,
+        pollOptions: pollQuestion.trim() ? trimmedOptions : null,
       };
 
-      const created = await decisionService.createDecision(payload);
+      const created = await createDecisionApi(payload, accessToken);
       navigate(`/decisions/${created.id}`);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create decision.');
+      setError(err.message || 'Failed to create decision. Please try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
+  const inputClass =
+    'w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100';
+  const labelClass = 'mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-slate-600';
+
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <button
-        onClick={() => navigate('/')}
-        className="inline-flex items-center space-x-2 text-sm text-slate-400 hover:text-white transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Back to Dashboard</span>
-      </button>
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
+      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <IconSidebar />
+      <div className="flex flex-1">
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+          <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
+            {/* Back link */}
+            <Link
+              to="/dashboard"
+              className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"
+            >
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Dashboard
+            </Link>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-8">
-        <div>
-          <div className="flex items-center space-x-2 text-blue-400 mb-2">
-            <Vote className="w-5 h-5" />
-            <span className="text-xs font-semibold uppercase tracking-wider">Decision Setup</span>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Create New Decision</h1>
-          <p className="text-sm text-slate-400 mt-1">
-            Define your decision scope and attach a structured voting poll for team alignment.
-          </p>
-        </div>
-
-        {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Decision Title *
-              </label>
-              <input
-                type="text"
-                required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Choose Database Architecture for Q4 Migration"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-              />
+            <div className="mb-8">
+              <h1 className="text-3xl font-black tracking-tight text-slate-900">Create Decision</h1>
+              <p className="mt-1 text-slate-500">Define your decision and attach an optional voting poll.</p>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Detailed Context & Description
-              </label>
-              <textarea
-                rows={4}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Explain the background, constraints, and goal of this decision..."
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Initial Status
-              </label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-              >
-                <option value="OPEN">OPEN - Accepting Votes</option>
-                <option value="CLOSED">CLOSED - View Only</option>
-              </select>
-            </div>
-          </div>
-
-          <hr className="border-slate-800" />
-
-          {/* Embedded Poll Section */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 text-indigo-400">
-              <Sparkles className="w-4 h-4" />
-              <h3 className="text-lg font-bold text-white">Attach Poll (Optional)</h3>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Poll Question
-              </label>
-              <input
-                type="text"
-                value={pollQuestion}
-                onChange={(e) => setPollQuestion(e.target.value)}
-                placeholder="e.g. Which database technology should we adopt?"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-              />
-            </div>
-
-            {pollQuestion.trim() && (
-              <div className="space-y-3 pt-2">
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                  Poll Options
-                </label>
-                {pollOptions.map((opt, idx) => (
-                  <div key={idx} className="flex items-center space-x-2">
-                    <input
-                      type="text"
-                      required
-                      value={opt}
-                      onChange={(e) => handleOptionChange(idx, e.target.value)}
-                      placeholder={`Option ${idx + 1}`}
-                      className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveOption(idx)}
-                      className="p-2.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={handleAddOption}
-                  className="inline-flex items-center space-x-2 text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors pt-2"
-                >
-                  <PlusCircle className="w-4 h-4" />
-                  <span>Add Another Option</span>
-                </button>
+            {/* Error */}
+            {error && (
+              <div className="mb-6 flex items-center gap-3 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-700">
+                <svg className="h-5 w-5 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span>{error}</span>
               </div>
             )}
-          </div>
 
-          <div className="pt-6 flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={() => navigate('/')}
-              className="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-400 hover:text-white bg-slate-800 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-600/20 disabled:opacity-50"
-            >
-              {submitting ? 'Publishing...' : 'Publish Decision'}
-            </button>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Decision Info Card */}
+              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+                <div>
+                  <label className={labelClass}>Decision Title *</label>
+                  <input
+                    type="text"
+                    required
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Choose Database Architecture for Q4"
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Description</label>
+                  <textarea
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Explain the background, constraints, and goal of this decision..."
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Initial Status</label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    className={inputClass}
+                  >
+                    <option value="OPEN">OPEN — Accepting Votes</option>
+                    <option value="CLOSED">CLOSED — View Only</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Poll Card */}
+              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+                <div>
+                  <h2 className="text-lg font-black tracking-tight text-slate-900">Attach Poll</h2>
+                  <p className="mt-1 text-sm text-slate-500">Optional. Add a structured voting poll to this decision.</p>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Poll Question</label>
+                  <input
+                    type="text"
+                    value={pollQuestion}
+                    onChange={(e) => setPollQuestion(e.target.value)}
+                    placeholder="e.g. Which database should we adopt?"
+                    className={inputClass}
+                  />
+                </div>
+
+                {pollQuestion.trim() && (
+                  <div className="space-y-3">
+                    <label className={labelClass}>Poll Options</label>
+                    {pollOptions.map((opt, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          required
+                          value={opt}
+                          onChange={(e) => handleOptionChange(idx, e.target.value)}
+                          placeholder={`Option ${idx + 1}`}
+                          className={`${inputClass} flex-1`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveOption(idx)}
+                          className="rounded-xl border border-slate-200 bg-white p-2 text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+
+                    {pollOptions.length < 8 && (
+                      <button
+                        type="button"
+                        onClick={handleAddOption}
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Add another option
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate('/dashboard')}
+                  className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-100"
+                >
+                  Cancel
+                </button>
+                <motion.button
+                  type="submit"
+                  disabled={submitting}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 disabled:opacity-70"
+                >
+                  {submitting ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      <span>Publishing...</span>
+                    </>
+                  ) : (
+                    <span>Publish Decision</span>
+                  )}
+                </motion.button>
+              </div>
+            </form>
           </div>
-        </form>
+          <Footer />
+        </main>
       </div>
     </div>
   );
-};
-
-export default CreateDecision;
+}

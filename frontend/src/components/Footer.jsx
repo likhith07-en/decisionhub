@@ -1,20 +1,32 @@
 import React from 'react';
-import { Vote } from 'lucide-react';
 
+/**
+ * Footer — light theme, matches original design system.
+ */
 const Footer = () => {
   return (
-    <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-8 text-center text-sm text-slate-500">
-      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center space-x-2">
-          <Vote className="w-5 h-5 text-blue-500" />
-          <span className="font-semibold text-slate-300">DecisionHub Platform</span>
+    <footer className="mt-auto border-t border-slate-200 bg-white py-6">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 text-xs text-slate-400">
+        <div className="flex items-center gap-2">
+          {/* DecisionHub logo mark */}
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600/10 text-blue-700">
+            <svg viewBox="0 0 48 48" className="h-4 w-4" aria-hidden="true">
+              <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
+                <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
+                <circle cx="24" cy="10" r="4" fill="currentColor" stroke="none" />
+                <circle cx="38" cy="24" r="4" fill="currentColor" stroke="none" />
+                <circle cx="24" cy="38" r="4" fill="currentColor" stroke="none" />
+                <path d="M13 21L21 13" />
+                <path d="M27 13L35 21" />
+                <path d="M13 27L21 35" />
+                <path d="M27 35L35 27" />
+              </g>
+            </svg>
+          </div>
+          <span className="font-semibold text-slate-500">DecisionHub</span>
         </div>
-        <p>&copy; {new Date().getFullYear()} DecisionHub Enterprise. All rights reserved.</p>
-        <div className="flex items-center space-x-6 text-xs text-slate-400">
-          <span>Enterprise Architecture</span>
-          <span>Clean Code Standard</span>
-          <span>Spring Security JWT</span>
-        </div>
+        <p>© {new Date().getFullYear()} DecisionHub. All rights reserved.</p>
+        <span className="hidden sm:block">Decide together.</span>
       </div>
     </footer>
   );

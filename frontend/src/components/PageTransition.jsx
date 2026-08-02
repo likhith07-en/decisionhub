@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 const transitionVariants = {
   initial: {
@@ -23,10 +23,26 @@ const transitionVariants = {
   },
 };
 
+const quotes = [
+  'Great decisions start with great conversations...',
+  'Bringing your team\'s ideas together...',
+  'Your collaborative workspace is loading...',
+  'Empowering smarter choices, one vote at a time...',
+  'Where every voice matters in every decision...',
+  'Building consensus, creating impact...',
+  'Transform ideas into actionable decisions...',
+  'Collaboration is the key to innovation...',
+];
+
 export default function PageTransition({ children }) {
   const location = useLocation();
   const prefersReducedMotion = useReducedMotion();
   const [showLoader, setShowLoader] = useState(true);
+
+  const quote = useMemo(
+    () => quotes[Math.floor(Math.random() * quotes.length)],
+    [location.pathname]
+  );
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -35,7 +51,7 @@ export default function PageTransition({ children }) {
     }
 
     setShowLoader(true);
-    const timer = window.setTimeout(() => setShowLoader(false), 500);
+    const timer = window.setTimeout(() => setShowLoader(false), 2000);
     return () => window.clearTimeout(timer);
   }, [location.pathname, prefersReducedMotion]);
 
@@ -65,39 +81,113 @@ export default function PageTransition({ children }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.96),_rgba(248,250,252,0.92))]"
+              transition={{ duration: 0.25 }}
+              className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center"
+              style={{
+                background:
+                  'radial-gradient(ellipse at 50% 30%, rgba(239,246,255,0.97) 0%, rgba(248,250,252,0.95) 50%, rgba(241,245,249,0.92) 100%)',
+              }}
             >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: [0.92, 1.02, 0.98, 1], opacity: 1 }}
-                transition={{ duration: 0.7, ease: 'easeOut' }}
-                className="flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/70 bg-white/70 shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur-2xl"
-              >
+              {/* Ambient floating orbs */}
+              <div className="absolute inset-0 overflow-hidden">
                 <motion.div
-                  animate={{ rotate: 360, scale: [1, 1.06, 1] }}
-                  transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="relative"
+                  animate={{
+                    x: [0, 30, -20, 0],
+                    y: [0, -20, 15, 0],
+                    scale: [1, 1.2, 0.9, 1],
+                  }}
+                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute left-[15%] top-[20%] h-48 w-48 rounded-full bg-blue-200/25 blur-3xl"
+                />
+                <motion.div
+                  animate={{
+                    x: [0, -25, 20, 0],
+                    y: [0, 15, -25, 0],
+                    scale: [1, 0.85, 1.15, 1],
+                  }}
+                  transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute bottom-[20%] right-[15%] h-56 w-56 rounded-full bg-violet-200/20 blur-3xl"
+                />
+                <motion.div
+                  animate={{
+                    x: [0, 15, -15, 0],
+                    y: [0, -10, 20, 0],
+                  }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute left-[50%] top-[60%] h-32 w-32 -translate-x-1/2 rounded-full bg-cyan-200/20 blur-3xl"
+                />
+              </div>
+
+              {/* Main loader content */}
+              <motion.div
+                initial={{ scale: 0.85, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="relative flex flex-col items-center gap-6"
+              >
+                {/* Glassmorphic logo container */}
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: [0.95, 1.02, 0.98, 1] }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
+                  className="flex h-28 w-28 items-center justify-center rounded-[2.2rem] border border-white/60 bg-white/60 shadow-[0_30px_80px_rgba(15,23,42,0.10),0_0_60px_rgba(59,130,246,0.08)] backdrop-blur-2xl"
                 >
+                  {/* Spinning + color-shifting logo */}
                   <motion.div
-                    animate={{ opacity: [0.5, 1, 0.75, 1], boxShadow: ['0 0 0 rgba(59,130,246,0.12)', '0 0 32px rgba(59,130,246,0.18)', '0 0 0 rgba(59,130,246,0.12)'] }}
-                    transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-                    className="flex h-14 w-14 items-center justify-center rounded-[1.4rem] bg-gradient-to-br from-blue-500 via-cyan-400 to-white"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                    className="relative"
                   >
-                    <svg viewBox="0 0 48 48" className="h-8 w-8 text-white" aria-hidden="true">
-                      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4">
-                        <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
-                        <circle cx="24" cy="10" r="4" fill="currentColor" stroke="none" />
-                        <circle cx="38" cy="24" r="4" fill="currentColor" stroke="none" />
-                        <circle cx="24" cy="38" r="4" fill="currentColor" stroke="none" />
-                        <path d="M13 21L21 13" />
-                        <path d="M27 13L35 21" />
-                        <path d="M13 27L21 35" />
-                        <path d="M27 35L35 27" />
-                      </g>
-                    </svg>
+                    <div className="logo-color-shift flex h-16 w-16 items-center justify-center rounded-[1.6rem] bg-gradient-to-br from-blue-500 via-cyan-400 to-violet-500 shadow-[0_8px_30px_rgba(59,130,246,0.25)]">
+                      <svg viewBox="0 0 48 48" className="h-9 w-9 text-white" aria-hidden="true">
+                        <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4">
+                          <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
+                          <circle cx="24" cy="10" r="4" fill="currentColor" stroke="none" />
+                          <circle cx="38" cy="24" r="4" fill="currentColor" stroke="none" />
+                          <circle cx="24" cy="38" r="4" fill="currentColor" stroke="none" />
+                          <path d="M13 21L21 13" />
+                          <path d="M27 13L35 21" />
+                          <path d="M13 27L21 35" />
+                          <path d="M27 35L35 27" />
+                        </g>
+                      </svg>
+                    </div>
                   </motion.div>
                 </motion.div>
+
+                {/* Brand name */}
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15, duration: 0.4 }}
+                  className="text-center"
+                >
+                  <h2 className="text-xl font-black tracking-tight text-slate-800">
+                    DecisionHub
+                  </h2>
+                </motion.div>
+
+                {/* Buffer / Progress bar */}
+                <motion.div
+                  initial={{ opacity: 0, scaleX: 0.5 }}
+                  animate={{ opacity: 1, scaleX: 1 }}
+                  transition={{ delay: 0.2, duration: 0.4 }}
+                  className="w-48 overflow-hidden rounded-full bg-slate-200/60 backdrop-blur-sm"
+                  style={{ height: '4px' }}
+                >
+                  <div className="buffer-progress h-full w-full rounded-full" />
+                </motion.div>
+
+                {/* Motivational quote */}
+                <motion.p
+                  key={quote}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                  className="max-w-xs text-center text-sm font-medium italic text-slate-400"
+                >
+                  "{quote}"
+                </motion.p>
               </motion.div>
             </motion.div>
           )}

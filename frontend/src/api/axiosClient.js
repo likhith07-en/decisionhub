@@ -240,10 +240,83 @@ export async function fetchDecisions(token) {
   }
 
   return [
-    { id: 1, title: 'Choose Q3 Product Roadmap', status: 'Active', votesCount: 14 },
-    { id: 2, title: 'Select New Team Lead', status: 'Completed', votesCount: 28 },
-    { id: 3, title: 'Tech Stack Upgrade to React 18', status: 'Active', votesCount: 9 },
-    { id: 4, title: 'Q4 Marketing Campaign Strategy', status: 'Active', votesCount: 19 },
-    { id: 5, title: 'Office Relocation & Hybrid Work Policy', status: 'In Review', votesCount: 32 },
+    { id: 1, title: 'Choose Q3 Product Roadmap', status: 'OPEN', votesCount: 14 },
+    { id: 2, title: 'Select New Team Lead', status: 'CLOSED', votesCount: 28 },
+    { id: 3, title: 'Tech Stack Upgrade to React 18', status: 'OPEN', votesCount: 9 },
+    { id: 4, title: 'Q4 Marketing Campaign Strategy', status: 'OPEN', votesCount: 19 },
+    { id: 5, title: 'Office Relocation & Hybrid Work Policy', status: 'OPEN', votesCount: 32 },
   ];
 }
+
+/**
+ * Fetch a single decision by ID.
+ */
+export async function fetchDecisionById(id, token) {
+  return await request(`/api/decisions/${id}`, { token });
+}
+
+/**
+ * Create a new decision (with optional embedded poll).
+ */
+export async function createDecisionApi(decisionData, token) {
+  return await request('/api/decisions', {
+    method: 'POST',
+    body: decisionData,
+    token,
+  });
+}
+
+/**
+ * Update an existing decision.
+ */
+export async function updateDecisionApi(id, decisionData, token) {
+  return await request(`/api/decisions/${id}`, {
+    method: 'PUT',
+    body: decisionData,
+    token,
+  });
+}
+
+/**
+ * Delete a decision by ID.
+ */
+export async function deleteDecisionApi(id, token) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const response = await fetch(`${API_BASE_URL}/api/decisions/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers,
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Delete failed with status ${response.status}`);
+  }
+  return true;
+}
+
+/**
+ * Cast a vote on a decision poll.
+ */
+export async function castVoteApi(voteData, token) {
+  return await request('/api/votes', {
+    method: 'POST',
+    body: voteData,
+    token,
+  });
+}
+
+/**
+ * Get live vote results for a decision.
+ */
+export async function getVoteResultsApi(decisionId, token) {
+  return await request(`/api/votes/result/${decisionId}`, { token });
+}
+
+/**
+ * Get current authenticated user profile.
+ */
+export async function getCurrentUserApi(token) {
+  return await request('/api/users/me', { token });
+}
+
