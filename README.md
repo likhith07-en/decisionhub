@@ -27,7 +27,7 @@ docker-compose up --build
 ```
 
 Access services at:
-- **Frontend App**: `http://localhost:5173`
+- **Frontend App**: `http://localhost:3000`
 - **Backend REST API**: `http://localhost:8080`
 - **Swagger OpenAPI Docs**: `http://localhost:8080/swagger-ui/index.html`
 
@@ -50,4 +50,4 @@ cd frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
