@@ -4,7 +4,6 @@ import DecisionCard from '../components/DecisionCard';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import IconSidebar from '../components/IconSidebar';
 
@@ -12,7 +11,6 @@ export default function DashboardPage() {
   const { user, accessToken } = useAuth();
   const [decisions, setDecisions] = useState([]);
   const [loadingDecisions, setLoadingDecisions] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchDecisions(accessToken)
@@ -23,12 +21,10 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
-      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+        <main className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 max-w-6xl w-full mx-auto px-6 py-8">
             {/* Header */}
             <div className="mb-8 flex items-center justify-between">

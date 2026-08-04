@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { usePreferences } from '../context/PreferencesContext';
 
 /**
- * IconSidebar — slim, always-visible vertical sidebar pinned to the right edge.
- * Contains icon-only buttons for notifications, theme toggle, settings, and help.
- * Internal functionality will be added later — these are UI placeholders.
+ * IconSidebar — slim control rail pinned to the right edge.
+ * It hosts quick actions for theme switching, preferences, and help.
  */
 
 const sidebarItems = [
@@ -75,7 +76,19 @@ const itemVariants = {
 };
 
 export default function IconSidebar() {
+  const { cycleTheme, setPreferences, preferences } = usePreferences();
+  const [isOpen, setIsOpen] = useState(false);
+  const [activePanel, setActivePanel] = useState('settings');
+
+  const openPanel = (panelId) => {
+    setActivePanel(panelId);
+    setIsOpen(true);
+  };
+
+  const closePanel = () => setIsOpen(false);
+
   return (
+    <>
     <motion.aside
       variants={containerVariants}
       initial="hidden"
@@ -109,6 +122,13 @@ export default function IconSidebar() {
             variants={itemVariants}
             whileHover={{ scale: 1.12 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              if (item.id === 'theme') {
+                cycleTheme();
+                return;
+              }
+              openPanel(item.id);
+            }}
             className={`icon-sidebar-btn ${item.hasNotif ? 'notif-pulse notif-dot' : ''}`}
             title={item.label}
             aria-label={item.label}
@@ -121,5 +141,113 @@ export default function IconSidebar() {
       {/* Spacer to keep icons centered */}
       <div className="mt-auto mb-3" />
     </motion.aside>
+
+    {isOpen && (
+      <div className="fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-sm" onClick={closePanel} />
+    )}
+
+    <motion.aside
+      initial={{ x: 320, opacity: 0 }}
+      animate={{ x: isOpen ? 0 : 320, opacity: isOpen ? 1 : 0 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+      className="fixed right-0 top-0 z-50 h-screen w-[320px] border-l p-5 shadow-2xl backdrop-blur-xl"
+      style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em]" style={{ color: 'var(--app-muted)' }}>Quick tools</p>
+          <h3 className="text-lg font-black" style={{ color: 'var(--app-text)' }}>
+            {activePanel === 'settings' ? 'Preferences' : activePanel === 'help' ? 'Help & Info' : 'Notifications'}
+          </h3>
+        </div>
+        <button onClick={closePanel} className="rounded-xl p-2" style={{ color: 'var(--app-muted)' }} aria-label="Close panel">
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="mt-6 space-y-4">
+        {activePanel === 'settings' ? (
+          <>
+            <div className="rounded-2xl border p-4" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)' }}>
+              <p className="text-sm font-semibold" style={{ color: 'var(--app-text)' }}>Theme</p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {['default', 'midnight', 'sunrise', 'forest'].map((theme) => (
+                  <button
+                    key={theme}
+                    onClick={() => setPreferences({ theme })}
+                    className={`rounded-xl border px-3 py-2 text-sm font-semibold ${preferences.theme === theme ? 'border-blue-500 bg-blue-50 text-blue-700' : ''}`}
+                    style={preferences.theme === theme ? { borderColor: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' } : { borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
+                  >
+                    {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border p-4" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)' }}>
+              <p className="text-sm font-semibold" style={{ color: 'var(--app-text)' }}>Font</p>
+              <div className="mt-3 space-y-3">
+                <label className="block text-sm" style={{ color: 'var(--app-muted)' }}>
+                  <span className="mb-1 block">Family</span>
+                  <select
+                    value={preferences.fontFamily}
+                    onChange={(e) => setPreferences({ fontFamily: e.target.value })}
+                    className="w-full rounded-xl border px-3 py-2 text-sm"
+                    style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
+                  >
+                    {['Inter', 'Poppins', 'Roboto', 'Space Grotesk'].map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="block text-sm" style={{ color: 'var(--app-muted)' }}>
+                  <span className="mb-1 block">Size</span>
+                  <select
+                    value={preferences.fontSize}
+                    onChange={(e) => setPreferences({ fontSize: e.target.value })}
+                    className="w-full rounded-xl border px-3 py-2 text-sm"
+                    style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
+                  >
+                    <option value="sm">Small</option>
+                    <option value="md">Medium</option>
+                    <option value="lg">Large</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border p-4" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)' }}>
+              <p className="text-sm font-semibold" style={{ color: 'var(--app-text)' }}>UI Mode</p>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {['day', 'night', 'focus', 'collab'].map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => setPreferences({ uiMode: mode })}
+                    className={`rounded-xl border px-3 py-2 text-sm font-semibold capitalize ${preferences.uiMode === mode ? 'border-blue-500 bg-blue-50 text-blue-700' : ''}`}
+                    style={preferences.uiMode === mode ? { borderColor: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' } : { borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : activePanel === 'help' ? (
+          <div className="rounded-2xl border p-4 text-sm" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)', color: 'var(--app-muted)' }}>
+            <p className="font-semibold" style={{ color: 'var(--app-text)' }}>Need help?</p>
+            <p className="mt-2">Use the dashboard to create decisions and the voting page to collect feedback. Preferences updates apply instantly.</p>
+          </div>
+        ) : (
+          <div className="rounded-2xl border p-4 text-sm" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)', color: 'var(--app-muted)' }}>
+            <p className="font-semibold" style={{ color: 'var(--app-text)' }}>Notifications</p>
+            <p className="mt-2">No new alerts right now. This area is ready for future backend-driven notifications.</p>
+          </div>
+        )}
+      </div>
+    </motion.aside>
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { usePreferences } from '../context/PreferencesContext';
 
 /**
  * Navbar — collapsible horizontal navbar with premium glassmorphic design.
@@ -9,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
  */
 export default function Navbar({ onToggleSidebar }) {
   const { user, logout } = useAuth();
+  const { preferences } = usePreferences();
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -16,9 +18,7 @@ export default function Navbar({ onToggleSidebar }) {
 
   const navLinkClass = (path) =>
     `text-sm font-medium transition-all duration-200 px-3 py-1.5 rounded-xl ${
-      isActive(path)
-        ? 'text-blue-600 font-semibold bg-blue-50'
-        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+      isActive(path) ? 'font-semibold' : ''
     }`;
 
   return (
@@ -50,7 +50,8 @@ export default function Navbar({ onToggleSidebar }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -80, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="sticky top-0 z-20 border-b border-slate-200/60 bg-white/70 backdrop-blur-xl"
+            className="sticky top-0 z-20 border-b backdrop-blur-xl"
+            style={{ backgroundColor: 'rgba(255,255,255,0.82)', borderColor: 'var(--app-border)', color: 'var(--app-text)' }}
           >
             <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
               {/* Left: hamburger + sidebar toggle + logo */}
@@ -58,7 +59,8 @@ export default function Navbar({ onToggleSidebar }) {
                 {/* Collapse navbar button */}
                 <button
                   onClick={() => setIsCollapsed(true)}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-700"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200"
+                  style={{ color: 'var(--app-muted)' }}
                   aria-label="Hide navbar"
                   title="Hide navbar"
                 >
@@ -66,19 +68,6 @@ export default function Navbar({ onToggleSidebar }) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
-
-                {/* Sidebar toggle (for left nav sidebar) */}
-                {onToggleSidebar && (
-                  <button
-                    onClick={onToggleSidebar}
-                    className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-700"
-                    aria-label="Toggle sidebar"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7h18M3 12h12M3 17h18" />
-                    </svg>
-                  </button>
-                )}
 
                 <Link to="/dashboard" className="flex items-center gap-2.5 ml-1">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md shadow-blue-200/50">
@@ -95,19 +84,44 @@ export default function Navbar({ onToggleSidebar }) {
                       </g>
                     </svg>
                   </div>
-                  <span className="text-lg font-black tracking-tight text-slate-900">DecisionHub</span>
+                  <span className="text-lg font-black tracking-tight" style={{ color: 'var(--app-text)' }}>DecisionHub</span>
                 </Link>
               </div>
 
               {/* Centre: nav links (desktop) */}
               <nav className="hidden items-center gap-1 md:flex">
-                <Link to="/dashboard" className={navLinkClass('/dashboard')}>Dashboard</Link>
-                <Link to="/decisions/create" className={navLinkClass('/decisions/create')}>Create</Link>
-                <Link to="/profile" className={navLinkClass('/profile')}>Profile</Link>
+                <Link
+                  to="/dashboard"
+                  className={navLinkClass('/dashboard')}
+                  style={isActive('/dashboard') ? { color: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)' } : { color: 'var(--app-muted)' }}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/decisions/create"
+                  className={navLinkClass('/decisions/create')}
+                  style={isActive('/decisions/create') ? { color: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)' } : { color: 'var(--app-muted)' }}
+                >
+                  Create
+                </Link>
+                <Link
+                  to="/profile"
+                  className={navLinkClass('/profile')}
+                  style={isActive('/profile') ? { color: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)' } : { color: 'var(--app-muted)' }}
+                >
+                  Profile
+                </Link>
               </nav>
 
               {/* Right: user + logout */}
               <div className="flex items-center gap-3">
+                <div
+                  className="hidden rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] sm:block"
+                  style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' }}
+                >
+                  {preferences.theme} · {preferences.uiMode}
+                </div>
+
                 <div className="flex items-center gap-2.5">
                   {user?.avatar ? (
                     <img
@@ -121,14 +135,15 @@ export default function Navbar({ onToggleSidebar }) {
                     </div>
                   )}
                   <div className="hidden sm:block">
-                    <p className="text-sm font-semibold text-slate-900 leading-tight">{user?.name || 'User'}</p>
-                    <p className="text-xs text-slate-400 leading-tight">{user?.email}</p>
+                    <p className="text-sm font-semibold leading-tight" style={{ color: 'var(--app-text)' }}>{user?.name || 'User'}</p>
+                    <p className="text-xs leading-tight" style={{ color: 'var(--app-muted)' }}>{user?.email}</p>
                   </div>
                 </div>
 
                 <button
                   onClick={logout}
-                  className="rounded-xl border border-slate-200/60 bg-white/80 px-3 py-1.5 text-xs font-bold text-slate-600 backdrop-blur-sm transition-all duration-200 hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                  className="rounded-xl border px-3 py-1.5 text-xs font-bold backdrop-blur-sm transition-all duration-200"
+                  style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-muted)' }}
                 >
                   Log Out
                 </button>

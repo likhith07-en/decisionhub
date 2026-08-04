@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { fetchDecisionById, castVoteApi, getVoteResultsApi } from '../api/axiosClient';
 import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import IconSidebar from '../components/IconSidebar';
 import PollCard from '../components/PollCard';
@@ -14,7 +13,6 @@ export default function VotePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { accessToken } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [decision, setDecision] = useState(null);
   const [selectedOptionId, setSelectedOptionId] = useState(null);
@@ -72,11 +70,10 @@ export default function VotePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
-      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+        <main className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
             {loading ? (
               <Loader message="Preparing voting session..." />
@@ -136,7 +133,15 @@ export default function VotePage() {
                 />
 
                 {/* Results */}
-                {results && <ResultChart results={results} />}
+                {decision.status === 'CLOSED' ? (
+                  <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center shadow-sm">
+                    <p className="text-sm font-semibold text-slate-600">
+                      Info is no more public, contact admin/ poll creator ({decision.createdBy?.name || 'respective user'})
+                    </p>
+                  </div>
+                ) : (
+                  results && <ResultChart results={results} />
+                )}
               </div>
             )}
           </div>

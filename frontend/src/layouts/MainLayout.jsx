@@ -1,24 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import IconSidebar from '../components/IconSidebar';
 
 /**
- * MainLayout — light theme, optional sidebar.
+ * MainLayout — light theme shell with a right-side control rail.
  * Used as a wrapper for authenticated page content.
  */
 const MainLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
-      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+    <div className="min-h-screen flex flex-col app-shell" style={{ backgroundColor: 'var(--app-bg)', color: 'var(--app-text)' }}>
+      <Navbar />
+      <IconSidebar />
 
       <div className="flex flex-1">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+        <main className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 max-w-6xl w-full mx-auto px-6 py-8">
             <Outlet />
           </div>

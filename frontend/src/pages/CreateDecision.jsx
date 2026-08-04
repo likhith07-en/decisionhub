@@ -4,14 +4,12 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { createDecisionApi } from '../api/axiosClient';
 import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import IconSidebar from '../components/IconSidebar';
 
 export default function CreateDecision() {
   const navigate = useNavigate();
   const { accessToken } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -77,11 +75,10 @@ export default function CreateDecision() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
-      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+        <main className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
             {/* Back link */}
             <Link

@@ -1,13 +1,10 @@
-import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
-import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import IconSidebar from '../components/IconSidebar';
 
 export default function Profile() {
   const { user } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!user) return null;
 
@@ -54,11 +51,10 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
-      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:pl-64 flex flex-col min-w-0">
+        <main className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
             <div className="mb-8">
               <h1 className="text-3xl font-black tracking-tight text-slate-900">Profile</h1>

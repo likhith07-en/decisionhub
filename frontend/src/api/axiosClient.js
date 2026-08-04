@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 // Storage key for simulated refresh token cookie fallback when backend is not live
 const REFRESH_TOKEN_KEY = 'dh_refresh_token';
@@ -41,86 +41,45 @@ async function request(endpoint, options = {}) {
   }
 }
 
-/**
- * Login with email and password.
- */
 export async function loginApi(email, password) {
-  try {
-    const data = await request('/api/auth/login', {
-      method: 'POST',
-      body: { email, password },
-    });
-    
-    // Save refresh token fallback if provided or generate token
-    const accessToken = data.token || `access_${Date.now()}`;
-    const refreshToken = data.refreshToken || `refresh_${Date.now()}`;
-    sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-    
-    const user = {
-      id: data.id || 'usr_1',
-      email: data.email || email,
-      name: data.name || email.split('@')[0],
-      avatar: data.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-    };
+  const data = await request('/api/auth/login', {
+    method: 'POST',
+    body: { email, password },
+  });
+  
+  // Save refresh token
+  const accessToken = data.token;
+  const refreshToken = data.refreshToken;
+  if (refreshToken) sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  
+  const user = {
+    id: data.user?.id || 'usr_1',
+    email: data.user?.email || email,
+    name: data.user?.name || email.split('@')[0],
+    avatar: data.user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+  };
 
-    return { accessToken, user };
-  } catch (error) {
-    // Fallback if backend is running standard AuthController stub or offline
-    if (email && password) {
-      const accessToken = `access_${Date.now()}`;
-      const refreshToken = `refresh_${Date.now()}`;
-      sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-      
-      const user = {
-        id: 'usr_demo',
-        email: email,
-        name: email.split('@')[0],
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-      };
-      return { accessToken, user };
-    }
-    throw error;
-  }
+  return { accessToken, user };
 }
 
-/**
- * Register new user with name, email, and password.
- */
 export async function registerApi(name, email, password) {
-  try {
-    const data = await request('/api/auth/register', {
-      method: 'POST',
-      body: { name, email, password },
-    });
-    
-    const accessToken = data.token || `access_${Date.now()}`;
-    const refreshToken = data.refreshToken || `refresh_${Date.now()}`;
-    sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  const data = await request('/api/auth/register', {
+    method: 'POST',
+    body: { name, email, password },
+  });
+  
+  const accessToken = data.token;
+  const refreshToken = data.refreshToken;
+  if (refreshToken) sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
 
-    const user = {
-      id: data.id || 'usr_new',
-      email: data.email || email,
-      name: name || data.name || email.split('@')[0],
-      avatar: data.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-    };
+  const user = {
+    id: data.user?.id || 'usr_new',
+    email: data.user?.email || email,
+    name: data.user?.name || name || email.split('@')[0],
+    avatar: data.user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+  };
 
-    return { accessToken, user };
-  } catch (error) {
-    if (email && password) {
-      const accessToken = `access_${Date.now()}`;
-      const refreshToken = `refresh_${Date.now()}`;
-      sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-      
-      const user = {
-        id: 'usr_new_demo',
-        email: email,
-        name: name || email.split('@')[0],
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-      };
-      return { accessToken, user };
-    }
-    throw error;
-  }
+  return { accessToken, user };
 }
 
 /**
@@ -137,80 +96,43 @@ export async function resetPasswordApi(email) {
   }
 }
 
-/**
- * Login with Google OAuth.
- */
 export async function googleLoginApi() {
-  try {
-    const data = await request('/api/auth/google', {
-      method: 'POST',
-    });
-    
-    const accessToken = data.token || `google_access_${Date.now()}`;
-    const refreshToken = data.refreshToken || `google_refresh_${Date.now()}`;
-    sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  const data = await request('/api/auth/google', {
+    method: 'POST',
+  });
+  
+  const accessToken = data.token;
+  const refreshToken = data.refreshToken;
+  if (refreshToken) sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
 
-    const user = {
-      id: data.id || 'google_user_1',
-      email: data.email || 'google.user@example.com',
-      name: data.name || 'Google User',
-      avatar: data.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=google',
-    };
+  const user = {
+    id: data.user?.id || 'google_user_1',
+    email: data.user?.email || 'google.user@example.com',
+    name: data.user?.name || 'Google User',
+    avatar: data.user?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=google',
+  };
 
-    return { accessToken, user };
-  } catch (error) {
-    // Fallback for Google sign in mock
-    const accessToken = `google_access_${Date.now()}`;
-    const refreshToken = `google_refresh_${Date.now()}`;
-    sessionStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-
-    const user = {
-      id: 'google_user_demo',
-      email: 'google.user@example.com',
-      name: 'Google User',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=google',
-    };
-    return { accessToken, user };
-  }
+  return { accessToken, user };
 }
 
-/**
- * Refresh session on load using stored refresh token / httpOnly cookie.
- */
 export async function refreshSessionApi() {
   const refreshToken = sessionStorage.getItem(REFRESH_TOKEN_KEY);
+  if (!refreshToken) throw new Error('No refresh token found');
   
-  try {
-    const data = await request('/api/auth/refresh', {
-      method: 'POST',
-      body: { refreshToken },
-    });
+  const data = await request('/api/auth/refresh', {
+    method: 'POST',
+    body: { refreshToken },
+  });
 
-    const newAccessToken = data.token || `access_${Date.now()}`;
-    const user = {
-      id: data.id || 'usr_1',
-      email: data.email || 'demo@example.com',
-      name: data.name || 'Demo User',
-      avatar: data.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
-    };
+  const newAccessToken = data.token;
+  const user = {
+    id: data.user?.id || 'usr_1',
+    email: data.user?.email || 'demo@example.com',
+    name: data.user?.name || 'Demo User',
+    avatar: data.user?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
+  };
 
-    return { accessToken: newAccessToken, user };
-  } catch (error) {
-    // Fallback: If refresh token exists in sessionStorage (simulating httpOnly refresh cookie), restore session
-    if (refreshToken) {
-      const mockEmail = 'demo@example.com';
-      return {
-        accessToken: `access_refreshed_${Date.now()}`,
-        user: {
-          id: 'usr_demo',
-          email: mockEmail,
-          name: 'Demo User',
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(mockEmail)}`,
-        },
-      };
-    }
-    throw new Error('No valid session found');
-  }
+  return { accessToken: newAccessToken, user };
 }
 
 /**
@@ -248,11 +170,42 @@ export async function fetchDecisions(token) {
   ];
 }
 
-/**
- * Fetch a single decision by ID.
- */
 export async function fetchDecisionById(id, token) {
-  return await request(`/api/decisions/${id}`, { token });
+  try {
+    return await request(`/api/decisions/${id}`, { token });
+  } catch (error) {
+    // Static mocks for 1-5
+    const idNum = Number(id);
+    if (idNum >= 1 && idNum <= 5) {
+      const titles = [
+        '',
+        'Choose Q3 Product Roadmap',
+        'Select New Team Lead',
+        'Tech Stack Upgrade to React 18',
+        'Q4 Marketing Campaign Strategy',
+        'Office Relocation & Hybrid Work Policy'
+      ];
+      const statuses = ['', 'OPEN', 'CLOSED', 'OPEN', 'OPEN', 'OPEN'];
+      
+      return {
+        id: idNum,
+        title: titles[idNum],
+        description: 'This is a static poll for demonstration purposes.',
+        status: statuses[idNum],
+        poll: { 
+          id: idNum, 
+          question: 'What is your choice?',
+          options: [
+            { id: 1, optionText: 'Option A', voteCount: 0 },
+            { id: 2, optionText: 'Option B', voteCount: 0 }
+          ]
+        },
+        createdBy: { id: 'usr_demo', name: 'Demo User' },
+        createdAt: new Date().toISOString()
+      };
+    }
+    throw error;
+  }
 }
 
 /**
@@ -306,11 +259,36 @@ export async function castVoteApi(voteData, token) {
   });
 }
 
-/**
- * Get live vote results for a decision.
- */
 export async function getVoteResultsApi(decisionId, token) {
-  return await request(`/api/votes/result/${decisionId}`, { token });
+  try {
+    return await request(`/api/votes/result/${decisionId}`, { token });
+  } catch (error) {
+    const idNum = Number(decisionId);
+    if (idNum >= 1 && idNum <= 5) {
+      const votes = [0, 14, 28, 9, 19, 32];
+      const titles = [
+        '',
+        'Choose Q3 Product Roadmap',
+        'Select New Team Lead',
+        'Tech Stack Upgrade to React 18',
+        'Q4 Marketing Campaign Strategy',
+        'Office Relocation & Hybrid Work Policy'
+      ];
+      
+      return {
+        decisionTitle: titles[idNum],
+        pollQuestion: 'What is your choice?',
+        totalVotes: votes[idNum],
+        winningOption: 'Option A',
+        winningVoteCount: Math.ceil(votes[idNum] * 0.6),
+        options: [
+          { id: 1, optionText: 'Option A', voteCount: Math.ceil(votes[idNum] * 0.6) },
+          { id: 2, optionText: 'Option B', voteCount: Math.floor(votes[idNum] * 0.4) }
+        ]
+      };
+    }
+    throw error;
+  }
 }
 
 /**
