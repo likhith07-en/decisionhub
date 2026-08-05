@@ -1,1 +1,245 @@
-@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --app-font-family: 'Inter', sans-serif;
+    --app-font-size: 1rem;
+    --app-density: 1;
+    --app-bg: #f8fafc;
+    --app-surface: #ffffff;
+    --app-surface-alt: #f1f5f9;
+    --app-text: #0f172a;
+    --app-muted: #64748b;
+    --app-border: rgba(15, 23, 42, 0.12);
+    --app-accent: #2563eb;
+    --app-accent-soft: rgba(37, 99, 235, 0.14);
+    --app-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    background-color: var(--app-bg);
+    color: var(--app-text);
+  }
+
+  .app-shell {
+    background: linear-gradient(135deg, var(--app-bg), var(--app-surface-alt));
+    color: var(--app-text);
+  }
+
+  .app-panel {
+    background: var(--app-surface);
+    color: var(--app-text);
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-radius, 1.25rem);
+    box-shadow: var(--app-shadow);
+  }
+
+  body {
+    @apply antialiased min-h-screen selection:bg-blue-500 selection:text-white;
+    font-family: var(--app-font-family);
+    font-size: var(--app-font-size);
+    transition: background-color 220ms ease, color 220ms ease;
+  }
+
+  * {
+    @apply transition-colors duration-200;
+    font-family: inherit;
+  }
+
+  .theme-midnight {
+    --app-bg: #020617;
+    --app-surface: #0f172a;
+    --app-surface-alt: #111827;
+    --app-text: #f8fafc;
+    --app-muted: #94a3b8;
+    --app-border: rgba(148, 163, 184, 0.24);
+    --app-accent: #60a5fa;
+    --app-accent-soft: rgba(96, 165, 250, 0.2);
+    --app-shadow: 0 18px 40px rgba(2, 6, 23, 0.42);
+  }
+
+  .theme-sunrise {
+    --app-bg: #fff7ed;
+    --app-surface: #fffbeb;
+    --app-surface-alt: #ffedd5;
+    --app-text: #7c2d12;
+    --app-muted: #9a2c16;
+    --app-border: rgba(194, 65, 12, 0.2);
+    --app-accent: #ea580c;
+    --app-accent-soft: rgba(234, 88, 12, 0.16);
+    --app-shadow: 0 18px 40px rgba(194, 65, 12, 0.16);
+  }
+
+  .theme-forest {
+    --app-bg: #f0fdf4;
+    --app-surface: #ecfdf5;
+    --app-surface-alt: #dcfce7;
+    --app-text: #14532d;
+    --app-muted: #166534;
+    --app-border: rgba(21, 101, 52, 0.18);
+    --app-accent: #16a34a;
+    --app-accent-soft: rgba(22, 163, 74, 0.16);
+    --app-shadow: 0 18px 40px rgba(21, 101, 52, 0.16);
+  }
+}
+
+/* ─── Custom Scrollbars ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ─── Logo Color Shift Animation ─── */
+@keyframes logoColorShift {
+  0% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  25% {
+    filter: hue-rotate(45deg) brightness(1.05);
+  }
+  50% {
+    filter: hue-rotate(90deg) brightness(1.1);
+  }
+  75% {
+    filter: hue-rotate(45deg) brightness(1.05);
+  }
+  100% {
+    filter: hue-rotate(0deg) brightness(1);
+  }
+}
+
+.logo-color-shift {
+  animation: logoColorShift 3s ease-in-out infinite;
+}
+
+/* ─── Buffer Progress Bar ─── */
+@keyframes bufferProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes bufferShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.buffer-progress {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #3b82f6 20%,
+    #06b6d4 40%,
+    #8b5cf6 60%,
+    #3b82f6 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: bufferShimmer 1.5s ease-in-out infinite;
+}
+
+/* ─── UI Density Helpers ─── */
+[data-ui-mode='day'] .rounded-2xl,
+[data-ui-mode='day'] .rounded-\[2rem\] {
+  border-radius: 1.25rem;
+}
+
+[data-ui-mode='night'] .rounded-2xl,
+[data-ui-mode='night'] .rounded-\[2rem\] {
+  border-radius: 1.25rem;
+}
+
+[data-ui-mode='focus'] .rounded-2xl,
+[data-ui-mode='focus'] .rounded-\[2rem\] {
+  border-radius: 1rem;
+}
+
+[data-ui-mode='collab'] .rounded-2xl,
+[data-ui-mode='collab'] .rounded-\[2rem\] {
+  border-radius: 1.75rem;
+}
+
+/* ─── Icon Sidebar Glow ─── */
+@keyframes iconGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+  }
+}
+
+.icon-sidebar-btn {
+  @apply relative flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200/60 bg-white/80 text-slate-500 backdrop-blur-sm transition-all duration-300;
+}
+
+.icon-sidebar-btn:hover {
+  @apply border-blue-200 bg-blue-50/80 text-blue-600 scale-110;
+  animation: iconGlow 2s ease-in-out infinite;
+}
+
+/* ─── Notification Pulse ─── */
+@keyframes notifPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.notif-pulse::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: notifPulse 2s ease-in-out infinite;
+}
+
+.notif-dot::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  z-index: 1;
+}

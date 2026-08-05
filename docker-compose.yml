@@ -1,13 +1,13 @@
 services:
   mysql:
     image: mysql:8.0
-    container_name: myapp-mysql
+    container_name: decisionhub-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-myapp_db}
-      MYSQL_USER: ${MYSQL_USER:-myapp_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-myapp_pass}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-decisionhub_db}
+      MYSQL_USER: ${MYSQL_USER:-decisionuser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-decisionpass}
     ports:
       - "3306:3306"
     volumes:
@@ -21,32 +21,30 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: myapp-backend
+      dockerfile: Dockerfile
+    container_name: decisionhub-backend
     restart: unless-stopped
     depends_on:
       mysql:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-myapp_db}
-      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-myapp_user}
-      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-myapp_pass}
-      JWT_SECRET: ${JWT_SECRET:-change_me}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-decisionhub_db}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-decisionuser}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-decisionpass}
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
     ports:
       - "8080:8080"
 
   frontend:
     build:
       context: ./frontend
-    container_name: myapp-frontend
+      dockerfile: Dockerfile
+    container_name: decisionhub-frontend
     restart: unless-stopped
     depends_on:
       - backend
     ports:
       - "3000:80"
-    environment:
-      REACT_APP_API_URL: http://localhost:8080
 
 volumes:
   mysql_data:

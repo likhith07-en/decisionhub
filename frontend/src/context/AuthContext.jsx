@@ -117,6 +117,7 @@ export function AuthProvider({ children }) {
     accessToken,
     isLoading,
     error,
+    isAuthenticated: !!user,
     login,
     register,
     loginWithGoogle,

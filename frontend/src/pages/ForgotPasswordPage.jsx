@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -142,54 +142,33 @@ export default function ForgotPasswordPage() {
               </defs>
 
               <rect x="34" y="38" width="452" height="264" rx="46" fill="url(#sceneWashForgot)" opacity="0.72" />
-              <motion.ellipse
-                cx="150"
-                cy="86"
-                rx="62"
-                ry="38"
+              <motion.ellipse cx="150" cy="86" rx="62" ry="38"
                 animate={{ scale: isFocused ? [1, 1.08, 1] : 1, opacity: isFocused ? 0.6 : 0.35 }}
                 transition={isFocused ? { duration: 4, repeat: Infinity, ease: 'easeInOut' } : spring}
-                fill="url(#orbBlueForgot)"
-                filter="url(#glowForgot)"
+                fill="url(#orbBlueForgot)" filter="url(#glowForgot)"
               />
-              <motion.circle
-                cx="396"
-                cy="82"
-                r="52"
+              <motion.circle cx="396" cy="82" r="52"
                 animate={{ y: isFocused ? -6 : 0, scale: isFocused ? 1.05 : 1 }}
-                transition={spring}
-                fill="#bfdbfe"
-                opacity="0.22"
+                transition={spring} fill="#bfdbfe" opacity="0.22"
               />
-              <motion.circle
-                cx="92"
-                cy="250"
-                r="28"
+              <motion.circle cx="92" cy="250" r="28"
                 animate={{ y: isFocused ? -8 : 0, opacity: isFocused ? 0.65 : 0.35 }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                fill="#dbeafe"
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} fill="#dbeafe"
               />
 
               <AnimatePresence>
                 {isFocused && (
                   <motion.polygon
-                    initial={{ opacity: 0, scaleY: 0.5 }}
-                    animate={{ opacity: 1, scaleY: 1 }}
-                    exit={{ opacity: 0, scaleY: 0.5 }}
-                    transition={{ duration: 0.28 }}
-                    points="260,126 172,228 348,228"
-                    fill="url(#screenGlowForgot)"
+                    initial={{ opacity: 0, scaleY: 0.5 }} animate={{ opacity: 1, scaleY: 1 }}
+                    exit={{ opacity: 0, scaleY: 0.5 }} transition={{ duration: 0.28 }}
+                    points="260,126 172,228 348,228" fill="url(#screenGlowForgot)"
                     style={{ originY: 1, filter: 'url(#glowForgot)' }}
                   />
                 )}
               </AnimatePresence>
 
-              <motion.g
-                id="laptop"
-                animate={{ y: isFocused ? -5 : 0, scale: isFocused ? 1.02 : 1 }}
-                transition={{ type: 'spring', stiffness: 240, damping: 20 }}
-                filter="url(#softShadowForgot)"
-              >
+              <motion.g id="laptop" animate={{ y: isFocused ? -5 : 0, scale: isFocused ? 1.02 : 1 }}
+                transition={{ type: 'spring', stiffness: 240, damping: 20 }} filter="url(#softShadowForgot)">
                 <rect x="154" y="132" width="112" height="78" rx="18" fill="url(#laptopBodyForgot)" />
                 <rect x="161" y="139" width="98" height="64" rx="12" fill="url(#screenInnerForgot)" />
                 <rect x="171" y="150" width="46" height="4" rx="2" fill="#93c5fd" opacity="0.9" />
@@ -199,14 +178,9 @@ export default function ForgotPasswordPage() {
                 <path d="M180 212H340C345 212 349 216 349 221V224H171V221C171 216 175 212 180 212Z" fill="#94a3b8" opacity="0.88" />
               </motion.g>
 
-              <motion.g
-                id="person-left"
-                animate={{ x: isFocused ? 10 : 0, rotate: isFocused ? 2.8 : 0, y: isFocused ? -2 : 0 }}
-                transition={spring}
-                whileHover={{ scale: 1.03, y: -4 }}
-                style={{ originX: '100px', originY: '252px' }}
-                className="cursor-pointer"
-              >
+              <motion.g id="person-left" animate={{ x: isFocused ? 10 : 0, rotate: isFocused ? 2.8 : 0, y: isFocused ? -2 : 0 }}
+                transition={spring} whileHover={{ scale: 1.03, y: -4 }}
+                style={{ originX: '100px', originY: '252px' }} className="cursor-pointer">
                 <path d="M65 276C65 232 84 198 118 198C152 198 171 232 171 276C171 281 167 285 162 285H74C69 285 65 281 65 276Z" fill="#1e3a8a" opacity="0.98" />
                 <path d="M88 202C95 193 106 188 118 188C130 188 141 193 148 202L148 217H88Z" fill="#c7d2fe" opacity="0.9" />
                 <circle cx="118" cy="158" r="25" fill="url(#skinWarmForgot)" />
@@ -214,14 +188,9 @@ export default function ForgotPasswordPage() {
                 <path d="M101 158C109 151 117 148 126 149" stroke="#334155" strokeWidth="3" strokeLinecap="round" fill="none" opacity="0.75" />
               </motion.g>
 
-              <motion.g
-                id="person-center"
-                animate={{ y: isFocused ? [-2, 2, -2] : 0, rotate: isFocused ? -1.1 : 0 }}
+              <motion.g id="person-center" animate={{ y: isFocused ? [-2, 2, -2] : 0, rotate: isFocused ? -1.1 : 0 }}
                 transition={isFocused ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } : spring}
-                whileHover={{ scale: 1.03, y: -4 }}
-                style={{ originX: '200px', originY: '272px' }}
-                className="cursor-pointer"
-              >
+                whileHover={{ scale: 1.03, y: -4 }} style={{ originX: '200px', originY: '272px' }} className="cursor-pointer">
                 <path d="M173 276C173 223 194 186 260 186C326 186 347 223 347 276C347 281 343 285 338 285H182C177 285 173 281 173 276Z" fill="url(#clothBlueForgot)" />
                 <path d="M223 189C231 177 244 171 260 171C276 171 289 177 297 189L297 209H223Z" fill="#dbeafe" opacity="0.95" />
                 <circle cx="260" cy="146" r="29" fill="url(#skinWarmForgot)" />
@@ -231,14 +200,9 @@ export default function ForgotPasswordPage() {
                 <path d="M251 155C255 158 265 158 269 155" stroke="#0f172a" strokeWidth="2.5" strokeLinecap="round" fill="none" />
               </motion.g>
 
-              <motion.g
-                id="person-right"
-                animate={{ x: isFocused ? -10 : 0, rotate: isFocused ? -2.8 : 0, y: isFocused ? -2 : 0 }}
-                transition={spring}
-                whileHover={{ scale: 1.03, y: -4 }}
-                style={{ originX: '300px', originY: '252px' }}
-                className="cursor-pointer"
-              >
+              <motion.g id="person-right" animate={{ x: isFocused ? -10 : 0, rotate: isFocused ? -2.8 : 0, y: isFocused ? -2 : 0 }}
+                transition={spring} whileHover={{ scale: 1.03, y: -4 }}
+                style={{ originX: '300px', originY: '252px' }} className="cursor-pointer">
                 <path d="M351 276C351 232 332 198 298 198C264 198 245 232 245 276C245 281 249 285 254 285H342C347 285 351 281 351 276Z" fill="#2563eb" opacity="0.98" />
                 <path d="M302 202C295 193 284 188 272 188C260 188 249 193 242 202L242 217H302Z" fill="#fde68a" opacity="0.92" />
                 <circle cx="286" cy="158" r="25" fill="url(#skinWarmForgot)" />
