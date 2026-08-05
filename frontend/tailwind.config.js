@@ -7,19 +7,25 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#f0f4ff',
-          100: '#e0e9ff',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          900: '#1e3a8a',
+        background: 'var(--background)',
+        surface: 'var(--surface)',
+        'surface-alt': 'var(--surface-alt)',
+        card: 'var(--card)',
+        border: {
+          default: 'var(--border)',
         },
-        slate: {
-          850: '#131e32',
-          900: '#0f172a',
-          950: '#090d16',
-        }
+        primary: {
+          DEFAULT: 'var(--primary)',
+          hover: 'var(--primary-hover)',
+          soft: 'var(--primary-soft)',
+        },
+        text: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+        },
+        success: 'var(--success)',
+        warning: 'var(--warning)',
+        danger: 'var(--danger)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

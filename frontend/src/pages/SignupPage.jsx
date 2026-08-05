@@ -70,8 +70,8 @@ export default function SignupPage() {
   const activeError = formError || error;
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 md:px-6 md:py-8">
-      <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.12)] md:grid-cols-2">
+    <div className="min-h-screen bg-background px-4 py-6 text-primary md:px-6 md:py-8">
+      <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[2rem] bg-surface shadow-[0_24px_70px_rgba(15,23,42,0.12)] md:grid-cols-2">
         
         {/* Left Hero Section with Graphics & Animation */}
         <section className="relative hidden overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-8 py-10 md:flex md:flex-col md:justify-between lg:px-12 lg:py-12">
@@ -97,7 +97,7 @@ export default function SignupPage() {
           </div>
 
           <div className="relative z-10 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-700">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-primary-hover">
               <svg viewBox="0 0 48 48" className="h-8 w-8" aria-hidden="true">
                 <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
                   <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
@@ -112,16 +112,16 @@ export default function SignupPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-black tracking-tight text-slate-900">DecisionHub</h1>
-              <p className="text-sm text-slate-500">Decide together</p>
+              <h1 className="text-2xl font-black tracking-tight text-primary">DecisionHub</h1>
+              <p className="text-sm text-secondary">Decide together</p>
             </div>
           </div>
 
           <div className="relative z-10 max-w-md">
-            <h2 className="text-5xl font-black tracking-tight text-slate-900 lg:text-6xl">
+            <h2 className="text-5xl font-black tracking-tight text-primary lg:text-6xl">
               Join the team workspace.
             </h2>
-            <p className="mt-5 max-w-lg text-lg leading-8 text-slate-500">
+            <p className="mt-5 max-w-lg text-lg leading-8 text-secondary">
               Create an account to start hosting polls, gathering feedback, and deciding together.
             </p>
           </div>
@@ -279,11 +279,11 @@ export default function SignupPage() {
         </section>
 
         {/* Right Form Section */}
-        <section className="flex items-center justify-center bg-white px-5 py-10 sm:px-8 lg:px-12">
+        <section className="flex items-center justify-center bg-surface px-5 py-10 sm:px-8 lg:px-12">
           <div className="w-full max-w-md">
             <div className="mb-6">
-              <h2 className="text-3xl font-black tracking-tight text-slate-900">Create account</h2>
-              <p className="mt-2 text-sm text-slate-500">Get started with your DecisionHub account</p>
+              <h2 className="text-3xl font-black tracking-tight text-primary">Create account</h2>
+              <p className="mt-2 text-sm text-secondary">Get started with your DecisionHub account</p>
             </div>
 
             {activeError && (
@@ -297,7 +297,7 @@ export default function SignupPage() {
 
             <form onSubmit={handleSignupSubmit} className="space-y-4">
               <div>
-                <label htmlFor="name" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-slate-600">
+                <label htmlFor="name" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-secondary">
                   Full Name
                 </label>
                 <input
@@ -308,13 +308,13 @@ export default function SignupPage() {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                   placeholder="John Doe"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-2xl border border-default bg-background px-4 py-3 text-primary outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="signup-email" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-slate-600">
+                <label htmlFor="signup-email" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-secondary">
                   Email Address
                 </label>
                 <input
@@ -325,13 +325,13 @@ export default function SignupPage() {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                   placeholder="name@company.com"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-2xl border border-default bg-background px-4 py-3 text-primary outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="signup-password" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-slate-600">
+                <label htmlFor="signup-password" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-secondary">
                   Password
                 </label>
                 <input
@@ -342,13 +342,13 @@ export default function SignupPage() {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                   placeholder="At least 6 characters"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-2xl border border-default bg-background px-4 py-3 text-primary outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-slate-600">
+                <label htmlFor="confirmPassword" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-secondary">
                   Confirm Password
                 </label>
                 <input
@@ -359,7 +359,7 @@ export default function SignupPage() {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                   placeholder="Re-enter password"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-2xl border border-default bg-background px-4 py-3 text-primary outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
                   required
                 />
               </div>
@@ -368,7 +368,7 @@ export default function SignupPage() {
                 type="submit"
                 disabled={isSubmitting}
                 whileTap={{ scale: 0.98 }}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 py-3.5 font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 disabled:opacity-70"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-3.5 font-bold text-white shadow-app shadow-blue-200 transition hover:bg-primary-hover disabled:opacity-70"
               >
                 {isSubmitting ? (
                   <>
@@ -380,28 +380,28 @@ export default function SignupPage() {
                 )}
               </motion.button>
 
-              <div className="flex items-center gap-4 py-1 text-sm text-slate-400">
-                <span className="h-px flex-1 bg-slate-200" />
+              <div className="flex items-center gap-4 py-1 text-sm text-secondary">
+                <span className="h-px flex-1 bg-surface-alt" />
                 <span>or</span>
-                <span className="h-px flex-1 bg-slate-200" />
+                <span className="h-px flex-1 bg-surface-alt" />
               </div>
 
               <button
                 type="button"
                 onClick={handleGoogleSubmit}
                 disabled={isSubmitting}
-                className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-70"
+                className="flex w-full items-center justify-center gap-3 rounded-2xl border border-default bg-surface px-4 py-3 font-semibold text-secondary transition hover:bg-slate-50 disabled:opacity-70"
               >
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm font-black text-red-500 shadow-sm ring-1 ring-slate-200">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-surface text-sm font-black text-red-500 shadow-sm ring-1 ring-default">
                   G
                 </span>
                 Sign up with Google
               </button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-slate-500">
+            <p className="mt-6 text-center text-sm text-secondary">
               Already have an account?{' '}
-              <Link to="/login" className="font-bold text-blue-600 hover:underline">
+              <Link to="/login" className="font-bold text-primary hover:underline">
                 Sign in
               </Link>
             </p>

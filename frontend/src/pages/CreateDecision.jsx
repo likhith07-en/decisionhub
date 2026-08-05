@@ -70,11 +70,11 @@ export default function CreateDecision() {
   };
 
   const inputClass =
-    'w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100';
-  const labelClass = 'mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-slate-600';
+    'w-full rounded-2xl border border-default bg-background px-4 py-3 text-primary outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100';
+  const labelClass = 'mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-secondary';
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
+    <div className="page-shell flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
@@ -83,7 +83,7 @@ export default function CreateDecision() {
             {/* Back link */}
             <Link
               to="/dashboard"
-              className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"
+              className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
             >
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -92,8 +92,8 @@ export default function CreateDecision() {
             </Link>
 
             <div className="mb-8">
-              <h1 className="text-3xl font-black tracking-tight text-slate-900">Create Decision</h1>
-              <p className="mt-1 text-slate-500">Define your decision and attach an optional voting poll.</p>
+              <h1 className="text-3xl font-black tracking-tight text-primary">Create Decision</h1>
+              <p className="mt-1 text-secondary">Define your decision and attach an optional voting poll.</p>
             </div>
 
             {/* Error */}
@@ -108,7 +108,7 @@ export default function CreateDecision() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Decision Info Card */}
-              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+              <div className="rounded-[2rem] border border-default bg-surface p-6 shadow-sm space-y-5">
                 <div>
                   <label className={labelClass}>Decision Title *</label>
                   <input
@@ -146,10 +146,10 @@ export default function CreateDecision() {
               </div>
 
               {/* Poll Card */}
-              <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+              <div className="rounded-[2rem] border border-default bg-surface p-6 shadow-sm space-y-5">
                 <div>
-                  <h2 className="text-lg font-black tracking-tight text-slate-900">Attach Poll</h2>
-                  <p className="mt-1 text-sm text-slate-500">Optional. Add a structured voting poll to this decision.</p>
+                  <h2 className="text-lg font-black tracking-tight text-primary">Attach Poll</h2>
+                  <p className="mt-1 text-sm text-secondary">Optional. Add a structured voting poll to this decision.</p>
                 </div>
 
                 <div>
@@ -179,7 +179,7 @@ export default function CreateDecision() {
                         <button
                           type="button"
                           onClick={() => handleRemoveOption(idx)}
-                          className="rounded-xl border border-slate-200 bg-white p-2 text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+                          className="rounded-xl border border-default bg-surface p-2 text-secondary transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
                         >
                           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -192,7 +192,7 @@ export default function CreateDecision() {
                       <button
                         type="button"
                         onClick={handleAddOption}
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
                       >
                         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -209,7 +209,7 @@ export default function CreateDecision() {
                 <button
                   type="button"
                   onClick={() => navigate('/dashboard')}
-                  className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-100"
+                  className="rounded-xl border border-default bg-surface px-5 py-2.5 text-sm font-bold text-secondary transition hover:bg-slate-100"
                 >
                   Cancel
                 </button>
@@ -217,7 +217,7 @@ export default function CreateDecision() {
                   type="submit"
                   disabled={submitting}
                   whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 disabled:opacity-70"
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-2.5 text-sm font-bold text-white shadow-app shadow-blue-200 transition hover:bg-primary-hover disabled:opacity-70"
                 >
                   {submitting ? (
                     <>

@@ -10,6 +10,9 @@ import CreateDecision from './pages/CreateDecision';
 import DecisionDetails from './pages/DecisionDetails';
 import VotePage from './pages/VotePage';
 import Profile from './pages/Profile';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions';
+import ContactSupport from './pages/ContactSupport';
 import NotFound from './pages/NotFound';
 
 function AppRoutes() {
@@ -60,6 +63,30 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/privacy-policy"
+          element={
+            <ProtectedRoute>
+              <PrivacyPolicy />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/terms-conditions"
+          element={
+            <ProtectedRoute>
+              <TermsConditions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contact-support"
+          element={
+            <ProtectedRoute>
+              <ContactSupport />
             </ProtectedRoute>
           }
         />

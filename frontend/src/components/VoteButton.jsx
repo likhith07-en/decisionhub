@@ -8,10 +8,10 @@ const VoteButton = ({ onClick, disabled, isLoading }) => {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3.5 font-bold text-white shadow-lg transition disabled:opacity-70 ${
+      className={`flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3.5 font-bold text-white shadow-app transition disabled:opacity-70 ${
         disabled && !isLoading
           ? 'bg-slate-300 shadow-none cursor-not-allowed'
-          : 'bg-blue-600 shadow-blue-200 hover:bg-blue-700'
+          : 'bg-primary shadow-blue-200 hover:bg-primary-hover'
       }`}
     >
       {isLoading ? (

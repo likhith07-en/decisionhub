@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { usePreferences } from '../context/PreferencesContext';
+import { Link } from 'react-router-dom';
+import { useTheme } from '../theme/useTheme';
 
 /**
  * IconSidebar — slim control rail pinned to the right edge.
@@ -76,7 +77,7 @@ const itemVariants = {
 };
 
 export default function IconSidebar() {
-  const { cycleTheme, setPreferences, preferences } = usePreferences();
+  const { theme, uiMode, setUiMode, cycleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [activePanel, setActivePanel] = useState('settings');
 
@@ -98,7 +99,7 @@ export default function IconSidebar() {
       {/* DecisionHub micro-logo at top */}
       <motion.div
         variants={itemVariants}
-        className="mb-auto mt-3 flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-violet-500/10 text-blue-600"
+        className="mb-auto mt-3 flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-violet-500/10 text-primary"
       >
         <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden="true">
           <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
@@ -173,11 +174,11 @@ export default function IconSidebar() {
             <div className="rounded-2xl border p-4" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)' }}>
               <p className="text-sm font-semibold" style={{ color: 'var(--app-text)' }}>Theme</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
-                {['default', 'midnight', 'sunrise', 'forest'].map((theme) => (
+                {['default', 'light', 'dark'].map((theme) => (
                   <button
                     key={theme}
                     onClick={() => setPreferences({ theme })}
-                    className={`rounded-xl border px-3 py-2 text-sm font-semibold ${preferences.theme === theme ? 'border-blue-500 bg-blue-50 text-blue-700' : ''}`}
+                    className={`rounded-xl border px-3 py-2 text-sm font-semibold ${preferences.theme === theme ? 'border-primary bg-primary-soft text-primary-hover' : ''}`}
                     style={preferences.theme === theme ? { borderColor: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' } : { borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
                   >
                     {theme.charAt(0).toUpperCase() + theme.slice(1)}
@@ -221,12 +222,13 @@ export default function IconSidebar() {
 
             <div className="rounded-2xl border p-4" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)' }}>
               <p className="text-sm font-semibold" style={{ color: 'var(--app-text)' }}>UI Mode</p>
+              <p className="text-xs text-secondary">Contrast and accent tone for buttons, highlights, and hero elements.</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
-                {['day', 'night', 'focus', 'collab'].map((mode) => (
+                {['black', 'green', 'saffron', 'royal'].map((mode) => (
                   <button
                     key={mode}
-                    onClick={() => setPreferences({ uiMode: mode })}
-                    className={`rounded-xl border px-3 py-2 text-sm font-semibold capitalize ${preferences.uiMode === mode ? 'border-blue-500 bg-blue-50 text-blue-700' : ''}`}
+                    onClick={() => setUiMode(mode)}
+                    className={`h-8 w-8 rounded-full shadow-sm transition-transform hover:scale-110 ${uiMode === mode ? 'ring-2 ring-primary ring-offset-2' : ''}`}
                     style={preferences.uiMode === mode ? { borderColor: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' } : { borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
                   >
                     {mode}
@@ -236,9 +238,38 @@ export default function IconSidebar() {
             </div>
           </>
         ) : activePanel === 'help' ? (
-          <div className="rounded-2xl border p-4 text-sm" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)', color: 'var(--app-muted)' }}>
-            <p className="font-semibold" style={{ color: 'var(--app-text)' }}>Need help?</p>
-            <p className="mt-2">Use the dashboard to create decisions and the voting page to collect feedback. Preferences updates apply instantly.</p>
+          <div className="space-y-4">
+            <div className="rounded-2xl border p-4 text-sm" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)', color: 'var(--app-muted)' }}>
+              <p className="font-semibold" style={{ color: 'var(--app-text)' }}>Need help?</p>
+              <p className="mt-2">Access support resources and policy pages directly from this panel.</p>
+            </div>
+
+            <div className="rounded-2xl border border-default bg-background p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">Quick links</p>
+              <div className="mt-4 space-y-3">
+                <Link
+                  to="/contact-support"
+                  className="block rounded-2xl border border-default bg-surface px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary-soft hover:bg-primary-soft"
+                  onClick={closePanel}
+                >
+                  Contact Support
+                </Link>
+                <Link
+                  to="/privacy-policy"
+                  className="block rounded-2xl border border-default bg-surface px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary-soft hover:bg-primary-soft"
+                  onClick={closePanel}
+                >
+                  Privacy Policy
+                </Link>
+                <Link
+                  to="/terms-conditions"
+                  className="block rounded-2xl border border-default bg-surface px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary-soft hover:bg-primary-soft"
+                  onClick={closePanel}
+                >
+                  Terms & Conditions
+                </Link>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="rounded-2xl border p-4 text-sm" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)', color: 'var(--app-muted)' }}>

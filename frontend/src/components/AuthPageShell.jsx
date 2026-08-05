@@ -3,7 +3,7 @@ import BrandMark from './BrandMark';
 
 export default function AuthPageShell({ title, subtitle, children, footer, accentText }) {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(248,250,252,0.98),_rgba(241,245,249,0.95))] px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(248,250,252,0.98),_rgba(241,245,249,0.95))] px-4 py-6 text-primary sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/80 shadow-[0_24px_90px_rgba(15,23,42,0.12)] backdrop-blur-xl md:grid-cols-[1.05fr_0.95fr]">
         <section className="relative hidden overflow-hidden bg-[linear-gradient(135deg,#f8fbff_0%,#eef4ff_50%,#f8fafc_100%)] px-8 py-10 md:flex md:flex-col md:justify-between lg:px-12 lg:py-12">
           <div className="pointer-events-none absolute inset-0">
@@ -28,7 +28,7 @@ export default function AuthPageShell({ title, subtitle, children, footer, accen
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl font-black tracking-tight text-slate-900 lg:text-6xl"
+              className="text-5xl font-black tracking-tight text-primary lg:text-6xl"
             >
               {accentText}
             </motion.h2>
@@ -36,7 +36,7 @@ export default function AuthPageShell({ title, subtitle, children, footer, accen
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-5 max-w-lg text-lg leading-8 text-slate-500"
+              className="mt-5 max-w-lg text-lg leading-8 text-secondary"
             >
               Create polls, compare options, and decide as a group with a beautifully shared workspace.
             </motion.p>
@@ -94,11 +94,11 @@ export default function AuthPageShell({ title, subtitle, children, footer, accen
             className="w-full max-w-md"
           >
             <div className="mb-8">
-              <h2 className="text-3xl font-black tracking-tight text-slate-900">{title}</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{subtitle}</p>
+              <h2 className="text-3xl font-black tracking-tight text-primary">{title}</h2>
+              <p className="mt-2 text-sm leading-6 text-secondary">{subtitle}</p>
             </div>
             {children}
-            {footer ? <div className="mt-6 text-center text-sm text-slate-500">{footer}</div> : null}
+            {footer ? <div className="mt-6 text-center text-sm text-secondary">{footer}</div> : null}
           </motion.div>
         </section>
       </div>

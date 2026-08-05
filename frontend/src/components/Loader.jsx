@@ -7,7 +7,7 @@ const Loader = ({ fullScreen = false, message = 'Loading...' }) => {
   const spinner = (
     <div className="flex flex-col items-center justify-center gap-3">
       <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-      {message && <p className="text-sm font-medium text-slate-500">{message}</p>}
+      {message && <p className="text-sm font-medium text-secondary">{message}</p>}
     </div>
   );
 

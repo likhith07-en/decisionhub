@@ -13,7 +13,7 @@ export default function Profile() {
       label: 'Account Name',
       value: user.name || '—',
       icon: (
-        <svg className="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
         </svg>
       ),
@@ -50,19 +50,19 @@ export default function Profile() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
+    <div className="page-shell flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
         <main className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
             <div className="mb-8">
-              <h1 className="text-3xl font-black tracking-tight text-slate-900">Profile</h1>
-              <p className="mt-1 text-slate-500">Your account information and preferences.</p>
+              <h1 className="text-3xl font-black tracking-tight text-primary">Profile</h1>
+              <p className="mt-1 text-secondary">Your account information and preferences.</p>
             </div>
 
             {/* Profile hero card */}
-            <div className="mb-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="mb-6 rounded-[2rem] border border-default bg-surface p-6 shadow-sm">
               <div className="flex items-center gap-5">
                 {user.avatar ? (
                   <img
@@ -71,14 +71,14 @@ export default function Profile() {
                     className="h-16 w-16 rounded-full ring-4 ring-blue-100"
                   />
                 ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-2xl font-black text-white">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-black text-white">
                     {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
                   </div>
                 )}
                 <div>
-                  <h2 className="text-xl font-black tracking-tight text-slate-900">{user.name || 'User'}</h2>
-                  <p className="text-sm text-slate-500">{user.email}</p>
-                  <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+                  <h2 className="text-xl font-black tracking-tight text-primary">{user.name || 'User'}</h2>
+                  <p className="text-sm text-secondary">{user.email}</p>
+                  <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary-hover">
                     {user.role || 'USER'}
                   </span>
                 </div>
@@ -90,14 +90,14 @@ export default function Profile() {
               {infoTiles.map((tile) => (
                 <div
                   key={tile.label}
-                  className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                  className="flex items-center gap-4 rounded-2xl border border-default bg-surface p-4 shadow-sm"
                 >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-background">
                     {tile.icon}
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-slate-500">{tile.label}</p>
-                    <p className="text-sm font-semibold text-slate-900">{tile.value}</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-secondary">{tile.label}</p>
+                    <p className="text-sm font-semibold text-primary">{tile.value}</p>
                   </div>
                 </div>
               ))}

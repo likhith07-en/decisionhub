@@ -69,7 +69,7 @@ export default function VotePage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
+    <div className="page-shell flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
@@ -78,16 +78,16 @@ export default function VotePage() {
             {loading ? (
               <Loader message="Preparing voting session..." />
             ) : !decision ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-                <p className="mb-4 text-slate-500">Decision not found.</p>
-                <Link to="/dashboard" className="text-sm font-bold text-blue-600 hover:underline">Return to Dashboard</Link>
+              <div className="rounded-2xl border border-dashed border-default p-12 text-center">
+                <p className="mb-4 text-secondary">Decision not found.</p>
+                <Link to="/dashboard" className="text-sm font-bold text-primary hover:underline">Return to Dashboard</Link>
               </div>
             ) : (
               <div className="space-y-6">
                 {/* Back link */}
                 <Link
                   to={`/decisions/${id}`}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
                 >
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -97,8 +97,8 @@ export default function VotePage() {
 
                 {/* Page title */}
                 <div>
-                  <h1 className="text-3xl font-black tracking-tight text-slate-900">Cast Your Vote</h1>
-                  <p className="mt-1 text-slate-500">{decision.title}</p>
+                  <h1 className="text-3xl font-black tracking-tight text-primary">Cast Your Vote</h1>
+                  <p className="mt-1 text-secondary">{decision.title}</p>
                 </div>
 
                 {/* Error */}
@@ -134,8 +134,8 @@ export default function VotePage() {
 
                 {/* Results */}
                 {decision.status === 'CLOSED' ? (
-                  <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center shadow-sm">
-                    <p className="text-sm font-semibold text-slate-600">
+                  <div className="mt-6 rounded-2xl border border-default bg-background p-6 text-center shadow-sm">
+                    <p className="text-sm font-semibold text-secondary">
                       Info is no more public, contact admin/ poll creator ({decision.createdBy?.name || 'respective user'})
                     </p>
                   </div>

@@ -41,8 +41,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 text-slate-900 md:px-6 md:py-8">
-      <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.12)] md:grid-cols-2">
+    <div className="min-h-screen bg-background px-4 py-6 text-primary md:px-6 md:py-8">
+      <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[2rem] bg-surface shadow-[0_24px_70px_rgba(15,23,42,0.12)] md:grid-cols-2">
         
         {/* Left Hero Section with Graphics & Animation */}
         <section className="relative hidden overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-8 py-10 md:flex md:flex-col md:justify-between lg:px-12 lg:py-12">
@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           <div className="relative z-10 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-700">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-primary-hover">
               <svg viewBox="0 0 48 48" className="h-8 w-8" aria-hidden="true">
                 <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
                   <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
@@ -83,16 +83,16 @@ export default function ForgotPasswordPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-black tracking-tight text-slate-900">DecisionHub</h1>
-              <p className="text-sm text-slate-500">Decide together</p>
+              <h1 className="text-2xl font-black tracking-tight text-primary">DecisionHub</h1>
+              <p className="text-sm text-secondary">Decide together</p>
             </div>
           </div>
 
           <div className="relative z-10 max-w-md">
-            <h2 className="text-5xl font-black tracking-tight text-slate-900 lg:text-6xl">
+            <h2 className="text-5xl font-black tracking-tight text-primary lg:text-6xl">
               Account recovery made simple.
             </h2>
-            <p className="mt-5 max-w-lg text-lg leading-8 text-slate-500">
+            <p className="mt-5 max-w-lg text-lg leading-8 text-secondary">
               Don&apos;t worry! Enter your email and we&apos;ll help you get back into your account in no time.
             </p>
           </div>
@@ -214,11 +214,11 @@ export default function ForgotPasswordPage() {
         </section>
 
         {/* Right Form Section */}
-        <section className="flex items-center justify-center bg-white px-5 py-10 sm:px-8 lg:px-12">
+        <section className="flex items-center justify-center bg-surface px-5 py-10 sm:px-8 lg:px-12">
           <div className="w-full max-w-md">
             <div className="mb-8">
-              <h2 className="text-3xl font-black tracking-tight text-slate-900">Reset Password</h2>
-              <p className="mt-2 text-sm text-slate-500">
+              <h2 className="text-3xl font-black tracking-tight text-primary">Reset Password</h2>
+              <p className="mt-2 text-sm text-secondary">
                 Enter your email address and we&apos;ll send you instructions to reset your password.
               </p>
             </div>
@@ -240,14 +240,14 @@ export default function ForgotPasswordPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-slate-900">Check your email</h3>
-                  <p className="mt-2 text-sm text-slate-500">
-                    We have sent password reset instructions to <span className="font-semibold text-slate-800">{email}</span>.
+                  <h3 className="text-xl font-bold text-primary">Check your email</h3>
+                  <p className="mt-2 text-sm text-secondary">
+                    We have sent password reset instructions to <span className="font-semibold text-primary">{email}</span>.
                   </p>
                 </div>
                 <Link
                   to="/login"
-                  className="block w-full rounded-2xl bg-blue-600 px-4 py-3.5 font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                  className="block w-full rounded-2xl bg-primary px-4 py-3.5 font-bold text-white shadow-app shadow-blue-200 transition hover:bg-primary-hover"
                 >
                   Return to Sign In
                 </Link>
@@ -255,7 +255,7 @@ export default function ForgotPasswordPage() {
             ) : (
               <form onSubmit={handleResetSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="forgot-email" className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-slate-600">
+                  <label htmlFor="forgot-email" className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-secondary">
                     Email Address
                   </label>
                   <input
@@ -266,7 +266,7 @@ export default function ForgotPasswordPage() {
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     placeholder="demo@example.com"
-                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                    className="w-full rounded-2xl border border-default bg-background px-4 py-3 text-primary outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
                     required
                   />
                 </div>
@@ -275,7 +275,7 @@ export default function ForgotPasswordPage() {
                   type="submit"
                   disabled={isSubmitting}
                   whileTap={{ scale: 0.98 }}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 py-3.5 font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 disabled:opacity-70"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-3.5 font-bold text-white shadow-app shadow-blue-200 transition hover:bg-primary-hover disabled:opacity-70"
                 >
                   {isSubmitting ? (
                     <>
@@ -287,9 +287,9 @@ export default function ForgotPasswordPage() {
                   )}
                 </motion.button>
 
-                <p className="mt-6 text-center text-sm text-slate-500">
+                <p className="mt-6 text-center text-sm text-secondary">
                   Remember your password?{' '}
-                  <Link to="/login" className="font-bold text-blue-600 hover:underline">
+                  <Link to="/login" className="font-bold text-primary hover:underline">
                     Sign in
                   </Link>
                 </p>

@@ -162,7 +162,7 @@ export default function PageTransition({ children }) {
                   transition={{ delay: 0.15, duration: 0.4 }}
                   className="text-center"
                 >
-                  <h2 className="text-xl font-black tracking-tight text-slate-800">
+                  <h2 className="text-xl font-black tracking-tight text-primary">
                     DecisionHub
                   </h2>
                 </motion.div>
@@ -184,7 +184,7 @@ export default function PageTransition({ children }) {
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.4 }}
-                  className="max-w-xs text-center text-sm font-medium italic text-slate-400"
+                  className="max-w-xs text-center text-sm font-medium italic text-secondary"
                 >
                   "{quote}"
                 </motion.p>

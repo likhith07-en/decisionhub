@@ -5,11 +5,11 @@ import React from 'react';
  */
 const Footer = () => {
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-white py-6">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 text-xs text-slate-400">
+    <footer className="mt-auto border-t border-surface bg-surface py-6">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 text-xs text-muted">
         <div className="flex items-center gap-2">
           {/* DecisionHub logo mark */}
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600/10 text-blue-700">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600/10 text-primary-hover">
             <svg viewBox="0 0 48 48" className="h-4 w-4" aria-hidden="true">
               <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
                 <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
@@ -23,7 +23,7 @@ const Footer = () => {
               </g>
             </svg>
           </div>
-          <span className="font-semibold text-slate-500">DecisionHub</span>
+          <span className="font-semibold text-secondary">DecisionHub</span>
         </div>
         <p>© {new Date().getFullYear()} DecisionHub. All rights reserved.</p>
         <span className="hidden sm:block">Decide together.</span>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { usePreferences } from '../context/PreferencesContext';
+import { useTheme } from '../theme/useTheme';
 
 /**
  * Navbar — collapsible horizontal navbar with premium glassmorphic design.
@@ -10,7 +10,7 @@ import { usePreferences } from '../context/PreferencesContext';
  */
 export default function Navbar({ onToggleSidebar }) {
   const { user, logout } = useAuth();
-  const { preferences } = usePreferences();
+  const { theme, uiMode } = useTheme();
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -32,7 +32,7 @@ export default function Navbar({ onToggleSidebar }) {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
             onClick={() => setIsCollapsed(false)}
-            className="fixed left-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200/60 bg-white/80 text-slate-600 shadow-lg shadow-slate-200/40 backdrop-blur-xl transition-all duration-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 hover:scale-105"
+            className="fixed left-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200/60 bg-white/80 text-secondary shadow-app shadow-slate-200/40 backdrop-blur-xl transition-all duration-200 hover:border-primary-soft hover:bg-primary-soft hover:text-primary hover:scale-105"
             aria-label="Show navbar"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +70,7 @@ export default function Navbar({ onToggleSidebar }) {
                 </button>
 
                 <Link to="/dashboard" className="flex items-center gap-2.5 ml-1">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md shadow-blue-200/50">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-app shadow-blue-200/50">
                     <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden="true">
                       <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
                         <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
@@ -118,8 +118,7 @@ export default function Navbar({ onToggleSidebar }) {
                 <div
                   className="hidden rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] sm:block"
                   style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' }}
-                >
-                  {preferences.theme} · {preferences.uiMode}
+                  {theme} · {uiMode}
                 </div>
 
                 <div className="flex items-center gap-2.5">
@@ -127,7 +126,7 @@ export default function Navbar({ onToggleSidebar }) {
                     <img
                       src={user.avatar}
                       alt={user.name || user.email}
-                      className="h-8 w-8 rounded-full bg-blue-100 ring-2 ring-blue-500/20"
+                      className="h-8 w-8 rounded-full bg-primary-soft ring-2 ring-blue-500/20"
                     />
                   ) : (
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-bold text-white">
@@ -142,8 +141,8 @@ export default function Navbar({ onToggleSidebar }) {
 
                 <button
                   onClick={logout}
-                  className="rounded-xl border px-3 py-1.5 text-xs font-bold backdrop-blur-sm transition-all duration-200"
-                  style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-muted)' }}
+                  className="rounded-xl border px-3 py-1.5 text-xs font-bold backdrop-blur-sm transition-all duration-200 bg-surface"
+                  style={{ borderColor: 'var(--app-border)', color: 'var(--app-muted)' }}
                 >
                   Log Out
                 </button>

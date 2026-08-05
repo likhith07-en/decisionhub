@@ -7,7 +7,7 @@ import VoteButton from './VoteButton';
 const PollCard = ({ poll, decisionId, selectedOptionId, onSelectOption, onVote, isSubmitting, hasVoted }) => {
   if (!poll) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-slate-500">
+      <div className="rounded-2xl border border-dashed border-default p-8 text-center text-secondary">
         No active poll linked to this decision.
       </div>
     );
@@ -16,13 +16,13 @@ const PollCard = ({ poll, decisionId, selectedOptionId, onSelectOption, onVote, 
   const totalVotes = poll.options?.reduce((sum, opt) => sum + (opt.voteCount || 0), 0) || 0;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-default bg-surface p-6 shadow-sm">
       {/* Poll header */}
       <div className="mb-5">
-        <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-slate-600">Active Poll</p>
-        <h3 className="text-xl font-black tracking-tight text-slate-900">{poll.question}</h3>
+        <p className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-secondary">Active Poll</p>
+        <h3 className="text-xl font-black tracking-tight text-primary">{poll.question}</h3>
         {totalVotes > 0 && (
-          <p className="mt-1 text-xs text-slate-400">{totalVotes} vote{totalVotes !== 1 ? 's' : ''} cast</p>
+          <p className="mt-1 text-xs text-secondary">{totalVotes} vote{totalVotes !== 1 ? 's' : ''} cast</p>
         )}
       </div>
 
@@ -40,8 +40,8 @@ const PollCard = ({ poll, decisionId, selectedOptionId, onSelectOption, onVote, 
                 !hasVoted ? 'cursor-pointer' : 'cursor-default'
               } ${
                 isSelected
-                  ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-100'
-                  : 'border-slate-200 bg-slate-50 hover:border-blue-200 hover:bg-white'
+                  ? 'border-primary bg-primary-soft ring-2 ring-blue-100'
+                  : 'border-default bg-background hover:border-primary-soft hover:bg-white'
               }`}
             >
               {/* Progress bar fill when voted */}
@@ -57,21 +57,21 @@ const PollCard = ({ poll, decisionId, selectedOptionId, onSelectOption, onVote, 
                   <span
                     className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition ${
                       isSelected
-                        ? 'border-blue-600 bg-blue-600'
-                        : 'border-slate-300 bg-white'
+                        ? 'border-blue-600 bg-primary'
+                        : 'border-default bg-surface'
                     }`}
                   >
                     {isSelected && (
-                      <span className="h-2 w-2 rounded-full bg-white" />
+                      <span className="h-2 w-2 rounded-full bg-surface" />
                     )}
                   </span>
-                  <span className="text-sm font-semibold text-slate-800">{option.optionText}</span>
+                  <span className="text-sm font-semibold text-primary">{option.optionText}</span>
                 </div>
 
                 {hasVoted && (
                   <div className="text-right">
-                    <span className="text-sm font-bold text-slate-900">{percentage}%</span>
-                    <span className="block text-xs text-slate-400">{option.voteCount} vote{option.voteCount !== 1 ? 's' : ''}</span>
+                    <span className="text-sm font-bold text-primary">{percentage}%</span>
+                    <span className="block text-xs text-secondary">{option.voteCount} vote{option.voteCount !== 1 ? 's' : ''}</span>
                   </div>
                 )}
               </div>

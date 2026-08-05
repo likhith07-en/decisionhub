@@ -20,7 +20,7 @@ export default function DashboardPage() {
   }, [accessToken]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col sm:pr-[60px]">
+    <div className="page-shell flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
@@ -29,12 +29,12 @@ export default function DashboardPage() {
             {/* Header */}
             <div className="mb-8 flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-black tracking-tight text-slate-900">Dashboard</h1>
-                <p className="mt-1 text-slate-500">Welcome back, {user?.name || user?.email}!</p>
+                <h1 className="text-3xl font-black tracking-tight text-primary">Dashboard</h1>
+                <p className="mt-1 text-secondary">Welcome back, {user?.name || user?.email}!</p>
               </div>
               <Link
                 to="/decisions/create"
-                className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                className="flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-app shadow-blue-200 transition hover:bg-primary-hover"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -55,11 +55,11 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center">
-                <p className="mb-4 text-slate-500">No decisions yet. Create your first poll!</p>
+              <div className="rounded-2xl border border-dashed border-default p-12 text-center">
+                <p className="mb-4 text-secondary">No decisions yet. Create your first poll!</p>
                 <Link
                   to="/decisions/create"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-app shadow-blue-200 transition hover:bg-primary-hover"
                 >
                   Create Decision
                 </Link>
