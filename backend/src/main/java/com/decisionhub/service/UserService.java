@@ -4,7 +4,6 @@ import com.decisionhub.dto.AuthResponse;
 import com.decisionhub.dto.LoginRequest;
 import com.decisionhub.dto.RegisterRequest;
 import com.decisionhub.dto.UserResponse;
-import com.decisionhub.entity.Role;
 import com.decisionhub.entity.User;
 import com.decisionhub.exception.UserNotFoundException;
 import com.decisionhub.repository.UserRepository;
@@ -43,10 +42,11 @@ public class UserService {
         }
 
         User user = new User();
-        user.setName(request.getName());
+        user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(Role.ROLE_USER);
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setRole("USER");
+        user.setProvider("LOCAL");
 
         User savedUser = userRepository.save(user);
         String token = jwtUtil.generateToken(savedUser.getEmail());
@@ -86,9 +86,11 @@ public class UserService {
     public UserResponse mapToUserResponse(User user) {
         return new UserResponse(
                 user.getId(),
-                user.getName(),
+                user.getFullName(),
                 user.getEmail(),
                 user.getRole(),
+                user.getProvider(),
+                user.getIsActive(),
                 user.getCreatedAt()
         );
     }

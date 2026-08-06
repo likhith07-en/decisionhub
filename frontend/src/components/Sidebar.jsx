@@ -21,6 +21,24 @@ const Sidebar = ({ isOpen, onClose }) => {
       ),
     },
     {
+      name: 'Analysis',
+      path: '/analysis',
+      icon: (
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Analytics',
+      path: '/analytics',
+      icon: (
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
       name: 'New Decision',
       path: '/decisions/create',
       icon: (
@@ -76,7 +94,8 @@ const Sidebar = ({ isOpen, onClose }) => {
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 backdrop-blur-sm lg:hidden"
+          style={{ backgroundColor: 'var(--overlay)' }}
           onClick={onClose}
         />
       )}
@@ -88,10 +107,10 @@ const Sidebar = ({ isOpen, onClose }) => {
       >
         {/* Mobile close row */}
         <div className="flex items-center justify-between border-b border-default px-4 py-3 lg:hidden">
-          <span className="text-sm font-semibold text-secondary">Navigation</span>
+          <span className="text-sm font-semibold text-muted">Navigation</span>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-secondary hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-lg p-1.5 text-muted hover:bg-surface-alt hover:text-text-primary"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -109,8 +128,8 @@ const Sidebar = ({ isOpen, onClose }) => {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
                   isActive
-                    ? 'bg-blue-600/10 text-primary font-semibold'
-                    : 'text-secondary hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-primary-soft text-primary font-semibold'
+                    : 'text-muted hover:bg-surface-alt hover:text-text-primary'
                 }`
               }
             >
@@ -128,8 +147,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                 {user.email?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div className="min-w-0">
-                <p className="truncate text-xs font-semibold text-primary">{user.name || 'User'}</p>
-                <p className="truncate text-xs text-secondary">{user.email}</p>
+                <p className="truncate text-xs font-semibold text-text-primary">{user.name || 'User'}</p>
+                <p className="truncate text-xs text-muted">{user.email}</p>
               </div>
             </div>
           </div>

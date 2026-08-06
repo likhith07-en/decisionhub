@@ -9,6 +9,8 @@ import DashboardPage from './pages/DashboardPage';
 import CreateDecision from './pages/CreateDecision';
 import DecisionDetails from './pages/DecisionDetails';
 import VotePage from './pages/VotePage';
+import AnalysisPage from './pages/AnalysisPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import Profile from './pages/Profile';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
@@ -31,6 +33,22 @@ function AppRoutes() {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analysis"
+          element={
+            <ProtectedRoute>
+              <AnalysisPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
             </ProtectedRoute>
           }
         />

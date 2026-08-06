@@ -10,19 +10,21 @@ public class PollRequest {
     @NotNull(message = "Decision ID is required")
     private Long decisionId;
 
-    @NotBlank(message = "Question is required")
-    private String question;
+    private String pollType = "SINGLE";
 
-    @NotEmpty(message = "At least two options are required")
-    private List<String> options;
+    private Boolean isAnonymous = false;
+
+    @NotEmpty(message = "At least two option labels are required")
+    private List<String> optionLabels;
 
     public PollRequest() {
     }
 
-    public PollRequest(Long decisionId, String question, List<String> options) {
+    public PollRequest(Long decisionId, String pollType, Boolean isAnonymous, List<String> optionLabels) {
         this.decisionId = decisionId;
-        this.question = question;
-        this.options = options;
+        this.pollType = pollType;
+        this.isAnonymous = isAnonymous;
+        this.optionLabels = optionLabels;
     }
 
     public Long getDecisionId() {
@@ -33,19 +35,27 @@ public class PollRequest {
         this.decisionId = decisionId;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getPollType() {
+        return pollType;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setPollType(String pollType) {
+        this.pollType = pollType;
     }
 
-    public List<String> getOptions() {
-        return options;
+    public Boolean getIsAnonymous() {
+        return isAnonymous;
     }
 
-    public void setOptions(List<String> options) {
-        this.options = options;
+    public void setIsAnonymous(Boolean isAnonymous) {
+        this.isAnonymous = isAnonymous;
+    }
+
+    public List<String> getOptionLabels() {
+        return optionLabels;
+    }
+
+    public void setOptionLabels(List<String> optionLabels) {
+        this.optionLabels = optionLabels;
     }
 }

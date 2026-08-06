@@ -9,7 +9,7 @@ import IconSidebar from '../components/IconSidebar';
 
 export default function CreateDecision() {
   const navigate = useNavigate();
-  const { accessToken } = useAuth();
+  const { user, accessToken } = useAuth();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -60,7 +60,7 @@ export default function CreateDecision() {
         pollOptions: pollQuestion.trim() ? trimmedOptions : null,
       };
 
-      const created = await createDecisionApi(payload, accessToken);
+      const created = await createDecisionApi(payload, accessToken, user);
       navigate(`/decisions/${created.id}`);
     } catch (err) {
       setError(err.message || 'Failed to create decision. Please try again.');
@@ -70,11 +70,11 @@ export default function CreateDecision() {
   };
 
   const inputClass =
-    'w-full rounded-2xl border border-default bg-background px-4 py-3 text-primary outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100';
-  const labelClass = 'mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-secondary';
+    'app-input px-4 py-3';
+  const labelClass = 'mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-muted';
 
   return (
-    <div className="page-shell flex flex-col sm:pr-[60px]">
+    <div className="page-shell min-h-screen flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
@@ -98,8 +98,8 @@ export default function CreateDecision() {
 
             {/* Error */}
             {error && (
-              <div className="mb-6 flex items-center gap-3 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-700">
-                <svg className="h-5 w-5 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <div className="mb-6 flex items-center gap-3 rounded-2xl p-4 text-sm" style={{ backgroundColor: 'var(--error-bg)', border: '1px solid var(--error-border)', color: 'var(--error-text)' }}>
+                <svg className="h-5 w-5 shrink-0" style={{ color: 'var(--error-text)' }} fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
                 <span>{error}</span>
@@ -209,7 +209,7 @@ export default function CreateDecision() {
                 <button
                   type="button"
                   onClick={() => navigate('/dashboard')}
-                  className="rounded-xl border border-default bg-surface px-5 py-2.5 text-sm font-bold text-secondary transition hover:bg-slate-100"
+                  className="rounded-xl border border-border-default bg-surface px-5 py-2.5 text-sm font-bold text-muted transition hover:bg-surface-alt"
                 >
                   Cancel
                 </button>
@@ -217,7 +217,7 @@ export default function CreateDecision() {
                   type="submit"
                   disabled={submitting}
                   whileTap={{ scale: 0.98 }}
-                  className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-2.5 text-sm font-bold text-white shadow-app shadow-blue-200 transition hover:bg-primary-hover disabled:opacity-70"
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-2.5 text-sm font-bold text-white shadow-app transition hover:bg-primary-hover disabled:opacity-70"
                 >
                   {submitting ? (
                     <>

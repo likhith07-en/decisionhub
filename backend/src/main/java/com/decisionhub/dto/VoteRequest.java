@@ -4,33 +4,44 @@ import jakarta.validation.constraints.NotNull;
 
 public class VoteRequest {
 
-    @NotNull(message = "Decision ID is required")
-    private Long decisionId;
+    @NotNull(message = "Poll ID is required")
+    private Long pollId;
 
-    @NotNull(message = "Option ID is required")
-    private Long optionId;
+    @NotNull(message = "Poll Option ID is required")
+    private Long pollOptionId;
+
+    private Integer rating;
 
     public VoteRequest() {
     }
 
-    public VoteRequest(Long decisionId, Long optionId) {
-        this.decisionId = decisionId;
-        this.optionId = optionId;
+    public VoteRequest(Long pollId, Long pollOptionId, Integer rating) {
+        this.pollId = pollId;
+        this.pollOptionId = pollOptionId;
+        this.rating = rating;
     }
 
-    public Long getDecisionId() {
-        return decisionId;
+    public Long getPollId() {
+        return pollId;
     }
 
-    public void setDecisionId(Long decisionId) {
-        this.decisionId = decisionId;
+    public void setPollId(Long pollId) {
+        this.pollId = pollId;
     }
 
-    public Long getOptionId() {
-        return optionId;
+    public Long getPollOptionId() {
+        return pollOptionId;
     }
 
-    public void setOptionId(Long optionId) {
-        this.optionId = optionId;
+    public void setPollOptionId(Long pollOptionId) {
+        this.pollOptionId = pollOptionId;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 }

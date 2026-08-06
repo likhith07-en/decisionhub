@@ -9,7 +9,10 @@ export default function BrandMark({ className = '' }) {
         className="flex items-center gap-3"
         transition={{ type: 'spring', stiffness: 220, damping: 24 }}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/70 bg-white/80 text-primary-hover shadow-[0_15px_35px_rgba(59,130,246,0.16)] backdrop-blur-xl">
+        <div
+          className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border-default text-primary backdrop-blur-xl shadow-app"
+          style={{ backgroundColor: 'color-mix(in srgb, var(--surface) 80%, transparent)' }}
+        >
           <svg viewBox="0 0 48 48" className="h-7 w-7" aria-hidden="true">
             <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4">
               <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
@@ -24,8 +27,8 @@ export default function BrandMark({ className = '' }) {
           </svg>
         </div>
         <div>
-          <p className="text-lg font-black tracking-tight text-primary">DecisionHub</p>
-          <p className="text-sm text-secondary">Decide together</p>
+          <p className="text-lg font-black tracking-tight text-text-primary">DecisionHub</p>
+          <p className="text-sm text-muted">Decide together</p>
         </div>
       </motion.div>
     </Link>

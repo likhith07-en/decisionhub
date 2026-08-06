@@ -1,6 +1,5 @@
 package com.decisionhub.dto;
 
-import com.decisionhub.entity.DecisionStatus;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -11,21 +10,27 @@ public class DecisionRequest {
 
     private String description;
 
-    private DecisionStatus status = DecisionStatus.OPEN;
+    private String visibility = "PUBLIC";
 
-    private String pollQuestion;
+    private Long categoryId;
 
-    private List<String> pollOptions;
+    // Embedded poll creation fields (optional)
+    private String pollType;
+    private Boolean isAnonymous;
+    private List<String> optionLabels;
 
     public DecisionRequest() {
     }
 
-    public DecisionRequest(String title, String description, DecisionStatus status, String pollQuestion, List<String> pollOptions) {
+    public DecisionRequest(String title, String description, String visibility, Long categoryId,
+                           String pollType, Boolean isAnonymous, List<String> optionLabels) {
         this.title = title;
         this.description = description;
-        this.status = status;
-        this.pollQuestion = pollQuestion;
-        this.pollOptions = pollOptions;
+        this.visibility = visibility;
+        this.categoryId = categoryId;
+        this.pollType = pollType;
+        this.isAnonymous = isAnonymous;
+        this.optionLabels = optionLabels;
     }
 
     public String getTitle() {
@@ -44,27 +49,43 @@ public class DecisionRequest {
         this.description = description;
     }
 
-    public DecisionStatus getStatus() {
-        return status;
+    public String getVisibility() {
+        return visibility;
     }
 
-    public void setStatus(DecisionStatus status) {
-        this.status = status;
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
     }
 
-    public String getPollQuestion() {
-        return pollQuestion;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setPollQuestion(String pollQuestion) {
-        this.pollQuestion = pollQuestion;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public List<String> getPollOptions() {
-        return pollOptions;
+    public String getPollType() {
+        return pollType;
     }
 
-    public void setPollOptions(List<String> pollOptions) {
-        this.pollOptions = pollOptions;
+    public void setPollType(String pollType) {
+        this.pollType = pollType;
+    }
+
+    public Boolean getIsAnonymous() {
+        return isAnonymous;
+    }
+
+    public void setIsAnonymous(Boolean isAnonymous) {
+        this.isAnonymous = isAnonymous;
+    }
+
+    public List<String> getOptionLabels() {
+        return optionLabels;
+    }
+
+    public void setOptionLabels(List<String> optionLabels) {
+        this.optionLabels = optionLabels;
     }
 }

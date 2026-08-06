@@ -26,15 +26,15 @@ public class VoteController {
     }
 
     @PostMapping
-    @Operation(summary = "Cast a vote", description = "Records a user's vote for an option in a decision poll")
+    @Operation(summary = "Cast a vote", description = "Records a user's vote for a poll option")
     public ResponseEntity<VoteResponse> castVote(@Valid @RequestBody VoteRequest request, Authentication authentication) {
         VoteResponse response = voteService.castVote(request, authentication.getName());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/result/{decisionId}")
-    @Operation(summary = "Get vote results", description = "Retrieves live vote tallies, total votes, and current winner for a decision")
-    public ResponseEntity<VoteResultResponse> getVoteResults(@PathVariable Long decisionId) {
-        return ResponseEntity.ok(voteService.getVoteResults(decisionId));
+    @GetMapping("/result/{pollId}")
+    @Operation(summary = "Get vote results", description = "Retrieves live vote tallies, total votes, and current winner for a poll")
+    public ResponseEntity<VoteResultResponse> getVoteResults(@PathVariable Long pollId) {
+        return ResponseEntity.ok(voteService.getVoteResults(pollId));
     }
 }

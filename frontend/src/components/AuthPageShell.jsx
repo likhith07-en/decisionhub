@@ -3,19 +3,27 @@ import BrandMark from './BrandMark';
 
 export default function AuthPageShell({ title, subtitle, children, footer, accentText }) {
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(248,250,252,0.98),_rgba(241,245,249,0.95))] px-4 py-6 text-primary sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/80 shadow-[0_24px_90px_rgba(15,23,42,0.12)] backdrop-blur-xl md:grid-cols-[1.05fr_0.95fr]">
-        <section className="relative hidden overflow-hidden bg-[linear-gradient(135deg,#f8fbff_0%,#eef4ff_50%,#f8fafc_100%)] px-8 py-10 md:flex md:flex-col md:justify-between lg:px-12 lg:py-12">
+    <div className="min-h-screen bg-background px-4 py-6 text-text-primary sm:px-6 lg:px-8">
+      <div
+        className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-6xl overflow-hidden rounded-[2rem] border border-border-default shadow-app backdrop-blur-xl md:grid-cols-[1.05fr_0.95fr]"
+        style={{ backgroundColor: 'color-mix(in srgb, var(--surface) 80%, transparent)' }}
+      >
+        <section
+          className="relative hidden overflow-hidden px-8 py-10 md:flex md:flex-col md:justify-between lg:px-12 lg:py-12"
+          style={{ background: 'var(--hero-gradient)' }}
+        >
           <div className="pointer-events-none absolute inset-0">
             <motion.div
               animate={{ x: [0, 24, 0], y: [0, -12, 0], scale: [1, 1.04, 1] }}
               transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute left-8 top-10 h-32 w-32 rounded-full bg-blue-200/35 blur-3xl"
+              className="absolute left-8 top-10 h-32 w-32 rounded-full blur-3xl"
+              style={{ backgroundColor: 'var(--primary-soft)', opacity: 0.5 }}
             />
             <motion.div
               animate={{ x: [0, -18, 0], y: [0, 14, 0], scale: [1, 1.06, 1] }}
               transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-16 right-12 h-40 w-40 rounded-full bg-cyan-200/25 blur-3xl"
+              className="absolute bottom-16 right-12 h-40 w-40 rounded-full blur-3xl"
+              style={{ backgroundColor: 'var(--primary-soft)', opacity: 0.4 }}
             />
           </div>
 
@@ -28,7 +36,7 @@ export default function AuthPageShell({ title, subtitle, children, footer, accen
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl font-black tracking-tight text-primary lg:text-6xl"
+              className="text-5xl font-black tracking-tight text-text-primary lg:text-6xl"
             >
               {accentText}
             </motion.h2>
@@ -36,7 +44,7 @@ export default function AuthPageShell({ title, subtitle, children, footer, accen
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-5 max-w-lg text-lg leading-8 text-secondary"
+              className="mt-5 max-w-lg text-lg leading-8 text-muted"
             >
               Create polls, compare options, and decide as a group with a beautifully shared workspace.
             </motion.p>
@@ -86,7 +94,10 @@ export default function AuthPageShell({ title, subtitle, children, footer, accen
           </div>
         </section>
 
-        <section className="flex items-center justify-center bg-white/70 px-5 py-10 sm:px-8 lg:px-12">
+        <section
+          className="flex items-center justify-center px-5 py-10 sm:px-8 lg:px-12"
+          style={{ backgroundColor: 'color-mix(in srgb, var(--surface) 70%, transparent)' }}
+        >
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -94,11 +105,11 @@ export default function AuthPageShell({ title, subtitle, children, footer, accen
             className="w-full max-w-md"
           >
             <div className="mb-8">
-              <h2 className="text-3xl font-black tracking-tight text-primary">{title}</h2>
-              <p className="mt-2 text-sm leading-6 text-secondary">{subtitle}</p>
+              <h2 className="text-3xl font-black tracking-tight text-text-primary">{title}</h2>
+              <p className="mt-2 text-sm leading-6 text-muted">{subtitle}</p>
             </div>
             {children}
-            {footer ? <div className="mt-6 text-center text-sm text-secondary">{footer}</div> : null}
+            {footer ? <div className="mt-6 text-center text-sm text-muted">{footer}</div> : null}
           </motion.div>
         </section>
       </div>

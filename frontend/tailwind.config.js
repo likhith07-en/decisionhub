@@ -23,9 +23,16 @@ export default {
           primary: 'var(--text-primary)',
           secondary: 'var(--text-secondary)',
         },
+        muted: 'var(--text-secondary)',
         success: 'var(--success)',
         warning: 'var(--warning)',
         danger: 'var(--danger)',
+        'input-focus-border': 'var(--primary)',
+        'input-focus-ring': 'var(--primary-soft)',
+        'overlay': 'var(--overlay)',
+      },
+      boxShadow: {
+        app: 'var(--shadow)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

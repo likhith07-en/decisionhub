@@ -1,9 +1,9 @@
 -- 06. Database Design — DecisionHub
 -- Exact Official Specification Schema (Normalized to 3NF)
 
-DROP DATABASE IF EXISTS myapp_db;
-CREATE DATABASE myapp_db;
-USE myapp_db;
+DROP DATABASE IF EXISTS decisionhub_db;
+CREATE DATABASE decisionhub_db;
+USE decisionhub_db;
 
 -- 1. categories
 CREATE TABLE categories (

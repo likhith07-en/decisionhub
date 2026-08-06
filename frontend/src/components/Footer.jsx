@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 text-xs text-muted">
         <div className="flex items-center gap-2">
           {/* DecisionHub logo mark */}
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600/10 text-primary-hover">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary-soft text-primary">
             <svg viewBox="0 0 48 48" className="h-4 w-4" aria-hidden="true">
               <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
                 <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "votes", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"user_id", "decision_id"})
+    @UniqueConstraint(columnNames = {"poll_id", "voter_id"})
 })
 public class Vote {
 
@@ -14,37 +14,34 @@ public class Vote {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "poll_id", nullable = false)
+    private Poll poll;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "decision_id", nullable = false)
-    private Decision decision;
+    @JoinColumn(name = "poll_option_id", nullable = false)
+    private PollOption pollOption;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_id", nullable = false)
-    private Option option;
+    @JoinColumn(name = "voter_id")
+    private User voter;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column
+    private Integer rating;
+
+    @Column(name = "voted_at", updatable = false)
+    private LocalDateTime votedAt;
 
     public Vote() {
     }
 
-    public Vote(Long id, User user, Decision decision, Option option, LocalDateTime createdAt) {
-        this.id = id;
-        this.user = user;
-        this.decision = decision;
-        this.option = option;
-        this.createdAt = createdAt;
-    }
-
     @PrePersist
     protected void onCreate() {
-        if (this.createdAt == null) {
-            this.createdAt = LocalDateTime.now();
+        if (this.votedAt == null) {
+            this.votedAt = LocalDateTime.now();
         }
     }
+
+    // --- Getters and Setters ---
 
     public Long getId() {
         return id;
@@ -54,35 +51,43 @@ public class Vote {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Poll getPoll() {
+        return poll;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setPoll(Poll poll) {
+        this.poll = poll;
     }
 
-    public Decision getDecision() {
-        return decision;
+    public PollOption getPollOption() {
+        return pollOption;
     }
 
-    public void setDecision(Decision decision) {
-        this.decision = decision;
+    public void setPollOption(PollOption pollOption) {
+        this.pollOption = pollOption;
     }
 
-    public Option getOption() {
-        return option;
+    public User getVoter() {
+        return voter;
     }
 
-    public void setOption(Option option) {
-        this.option = option;
+    public void setVoter(User voter) {
+        this.voter = voter;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public Integer getRating() {
+        return rating;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public LocalDateTime getVotedAt() {
+        return votedAt;
+    }
+
+    public void setVotedAt(LocalDateTime votedAt) {
+        this.votedAt = votedAt;
     }
 }

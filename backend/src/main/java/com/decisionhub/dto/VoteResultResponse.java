@@ -4,9 +4,10 @@ import java.util.List;
 
 public class VoteResultResponse {
 
+    private Long pollId;
     private Long decisionId;
     private String decisionTitle;
-    private String pollQuestion;
+    private String pollType;
     private Integer totalVotes;
     private String winningOption;
     private Integer winningVoteCount;
@@ -15,14 +16,25 @@ public class VoteResultResponse {
     public VoteResultResponse() {
     }
 
-    public VoteResultResponse(Long decisionId, String decisionTitle, String pollQuestion, Integer totalVotes, String winningOption, Integer winningVoteCount, List<OptionDto> options) {
+    public VoteResultResponse(Long pollId, Long decisionId, String decisionTitle, String pollType,
+                              Integer totalVotes, String winningOption, Integer winningVoteCount,
+                              List<OptionDto> options) {
+        this.pollId = pollId;
         this.decisionId = decisionId;
         this.decisionTitle = decisionTitle;
-        this.pollQuestion = pollQuestion;
+        this.pollType = pollType;
         this.totalVotes = totalVotes;
         this.winningOption = winningOption;
         this.winningVoteCount = winningVoteCount;
         this.options = options;
+    }
+
+    public Long getPollId() {
+        return pollId;
+    }
+
+    public void setPollId(Long pollId) {
+        this.pollId = pollId;
     }
 
     public Long getDecisionId() {
@@ -41,12 +53,12 @@ public class VoteResultResponse {
         this.decisionTitle = decisionTitle;
     }
 
-    public String getPollQuestion() {
-        return pollQuestion;
+    public String getPollType() {
+        return pollType;
     }
 
-    public void setPollQuestion(String pollQuestion) {
-        this.pollQuestion = pollQuestion;
+    public void setPollType(String pollType) {
+        this.pollType = pollType;
     }
 
     public Integer getTotalVotes() {

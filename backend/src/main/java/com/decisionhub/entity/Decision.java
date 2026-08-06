@@ -2,6 +2,8 @@ package com.decisionhub.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "decisions")
@@ -11,36 +13,45 @@ public class Decision {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
+    @Column(nullable = false, length = 150)
     private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DecisionStatus status = DecisionStatus.OPEN;
+    @Column(length = 10)
+    private String visibility = "PUBLIC";
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "created_by_id", nullable = false)
-    private User createdBy;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
 
-    @OneToOne(mappedBy = "decision", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Poll poll;
+    @Column(length = 20)
+    private String status = "OPEN";
+
+    @OneToMany(mappedBy = "decision", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<DecisionOption> options = new ArrayList<>();
+
+    @OneToMany(mappedBy = "decision", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ComparisonFactor> comparisonFactors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "decision", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Poll> polls = new ArrayList<>();
+
+    @OneToMany(mappedBy = "decision", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<>();
 
     public Decision() {
-    }
-
-    public Decision(Long id, String title, String description, DecisionStatus status, LocalDateTime createdAt, User createdBy) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
     }
 
     @PrePersist
@@ -50,12 +61,22 @@ public class Decision {
         }
     }
 
+    // --- Getters and Setters ---
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public String getTitle() {
@@ -74,12 +95,20 @@ public class Decision {
         this.description = description;
     }
 
-    public DecisionStatus getStatus() {
-        return status;
+    public String getVisibility() {
+        return visibility;
     }
 
-    public void setStatus(DecisionStatus status) {
-        this.status = status;
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -90,19 +119,51 @@ public class Decision {
         this.createdAt = createdAt;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
+    public Boolean getIsDeleted() {
+        return isDeleted;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
-    public Poll getPoll() {
-        return poll;
+    public String getStatus() {
+        return status;
     }
 
-    public void setPoll(Poll poll) {
-        this.poll = poll;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<DecisionOption> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<DecisionOption> options) {
+        this.options = options;
+    }
+
+    public List<ComparisonFactor> getComparisonFactors() {
+        return comparisonFactors;
+    }
+
+    public void setComparisonFactors(List<ComparisonFactor> comparisonFactors) {
+        this.comparisonFactors = comparisonFactors;
+    }
+
+    public List<Poll> getPolls() {
+        return polls;
+    }
+
+    public void setPolls(List<Poll> polls) {
+        this.polls = polls;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

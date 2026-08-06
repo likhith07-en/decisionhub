@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { fetchDecisionById, castVoteApi, getVoteResultsApi } from '../api/axiosClient';
+import { getUserVoteForDecision } from '../services/decisionStorage';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import IconSidebar from '../components/IconSidebar';
@@ -12,7 +13,7 @@ import Loader from '../components/Loader';
 export default function VotePage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { accessToken } = useAuth();
+  const { user, accessToken } = useAuth();
 
   const [decision, setDecision] = useState(null);
   const [selectedOptionId, setSelectedOptionId] = useState(null);
@@ -32,6 +33,14 @@ export default function VotePage() {
       setLoading(true);
       const dec = await fetchDecisionById(id, accessToken);
       setDecision(dec);
+
+      // Check if user has already voted
+      const existingVote = getUserVoteForDecision(id);
+      if (existingVote) {
+        setSelectedOptionId(existingVote.optionId);
+        setHasVoted(true);
+      }
+
       try {
         const res = await getVoteResultsApi(id, accessToken);
         setResults(res);
@@ -46,14 +55,30 @@ export default function VotePage() {
   };
 
   const handleVote = async () => {
-    if (!selectedOptionId) return;
+    if (!selectedOptionId || !decision) return;
     setError(null);
     setSubmitting(true);
 
+    const selectedOption = decision.poll?.options?.find(
+      (opt) => Number(opt.id) === Number(selectedOptionId)
+    );
+    const optionText = selectedOption ? selectedOption.optionText : 'Selected Choice';
+
     try {
-      await castVoteApi({ decisionId: Number(id), optionId: selectedOptionId }, accessToken);
-      setSuccessMsg('Your vote has been recorded!');
+      await castVoteApi(
+        { decisionId: Number(id), optionId: Number(selectedOptionId) },
+        accessToken,
+        {
+          optionText,
+          decisionTitle: decision.title,
+          pollQuestion: decision.poll?.question || decision.title,
+          userEmail: user?.email || 'user@example.com',
+        }
+      );
+
+      setSuccessMsg('Your vote has been recorded! Added to your Decision Analysis.');
       setHasVoted(true);
+
       const updatedResults = await getVoteResultsApi(id, accessToken);
       setResults(updatedResults);
     } catch (err) {
@@ -69,7 +94,7 @@ export default function VotePage() {
   };
 
   return (
-    <div className="page-shell flex flex-col sm:pr-[60px]">
+    <div className="page-shell min-h-screen flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
@@ -85,15 +110,26 @@ export default function VotePage() {
             ) : (
               <div className="space-y-6">
                 {/* Back link */}
-                <Link
-                  to={`/decisions/${id}`}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
-                >
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                  </svg>
-                  Back to Decision
-                </Link>
+                <div className="flex items-center justify-between">
+                  <Link
+                    to={`/decisions/${id}`}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+                  >
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back to Decision Details
+                  </Link>
+
+                  {hasVoted && (
+                    <Link
+                      to="/analysis"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-500 hover:text-white"
+                    >
+                      📊 View Outcome in Analysis →
+                    </Link>
+                  )}
+                </div>
 
                 {/* Page title */}
                 <div>
@@ -103,8 +139,8 @@ export default function VotePage() {
 
                 {/* Error */}
                 {error && (
-                  <div className="flex items-center gap-3 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm text-red-700">
-                    <svg className="h-5 w-5 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="flex items-center gap-3 rounded-2xl p-4 text-sm" style={{ backgroundColor: 'var(--error-bg)', border: '1px solid var(--error-border)', color: 'var(--error-text)' }}>
+                    <svg className="h-5 w-5 shrink-0" style={{ color: 'var(--error-text)' }} fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
                     <span>{error}</span>
@@ -113,11 +149,19 @@ export default function VotePage() {
 
                 {/* Success */}
                 {successMsg && (
-                  <div className="flex items-center gap-3 rounded-2xl border border-green-100 bg-green-50 p-4 text-sm text-green-700">
-                    <svg className="h-5 w-5 shrink-0 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span>{successMsg}</span>
+                  <div className="flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-800">
+                    <div className="flex items-center gap-3">
+                      <svg className="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{successMsg}</span>
+                    </div>
+                    <Link
+                      to="/analysis"
+                      className="font-bold underline hover:opacity-80"
+                    >
+                      Open Analysis Page
+                    </Link>
                   </div>
                 )}
 
@@ -151,3 +195,4 @@ export default function VotePage() {
     </div>
   );
 }
+

@@ -50,15 +50,15 @@ export default function Profile() {
   ];
 
   return (
-    <div className="page-shell flex flex-col sm:pr-[60px]">
+    <div className="page-shell min-h-screen flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
         <main className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 max-w-3xl w-full mx-auto px-6 py-8">
             <div className="mb-8">
-              <h1 className="text-3xl font-black tracking-tight text-primary">Profile</h1>
-              <p className="mt-1 text-secondary">Your account information and preferences.</p>
+              <h1 className="text-3xl font-black tracking-tight text-text-primary">Profile</h1>
+              <p className="mt-1 text-muted">Your account information and preferences.</p>
             </div>
 
             {/* Profile hero card */}
@@ -68,7 +68,8 @@ export default function Profile() {
                   <img
                     src={user.avatar}
                     alt={user.name || user.email}
-                    className="h-16 w-16 rounded-full ring-4 ring-blue-100"
+                    className="h-16 w-16 rounded-full ring-4"
+                    style={{ '--tw-ring-color': 'var(--primary-soft)' }}
                   />
                 ) : (
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-black text-white">
@@ -76,8 +77,8 @@ export default function Profile() {
                   </div>
                 )}
                 <div>
-                  <h2 className="text-xl font-black tracking-tight text-primary">{user.name || 'User'}</h2>
-                  <p className="text-sm text-secondary">{user.email}</p>
+                  <h2 className="text-xl font-black tracking-tight text-text-primary">{user.name || 'User'}</h2>
+                  <p className="text-sm text-muted">{user.email}</p>
                   <span className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-0.5 text-xs font-semibold text-primary-hover">
                     {user.role || 'USER'}
                   </span>
@@ -96,8 +97,8 @@ export default function Profile() {
                     {tile.icon}
                   </div>
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-secondary">{tile.label}</p>
-                    <p className="text-sm font-semibold text-primary">{tile.value}</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-muted">{tile.label}</p>
+                    <p className="text-sm font-semibold text-text-primary">{tile.value}</p>
                   </div>
                 </div>
               ))}

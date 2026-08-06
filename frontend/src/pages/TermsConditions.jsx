@@ -5,18 +5,18 @@ import IconSidebar from '../components/IconSidebar';
 
 export default function TermsConditions() {
   return (
-    <div className="page-shell flex flex-col sm:pr-[60px]">
+    <div className="page-shell min-h-screen flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
         <main className="flex-1 flex flex-col min-w-0">
           <div className="flex-1 max-w-5xl w-full mx-auto px-6 py-8">
-            <div className="mb-10 rounded-[2rem] bg-background p-10 text-white shadow-2xl shadow-slate-900/10">
+            <div className="mb-10 rounded-[2rem] bg-gradient-to-r from-indigo-700 to-blue-600 p-10 text-white shadow-2xl shadow-blue-500/10">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="max-w-3xl">
-                  <p className="text-sm uppercase tracking-[0.3em] text-secondary">Terms & Conditions</p>
+                  <p className="text-sm uppercase tracking-[0.3em] text-blue-200">Terms & Conditions</p>
                   <h1 className="mt-3 text-4xl font-black tracking-tight">Using DecisionHub responsibly.</h1>
-                  <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
+                  <p className="mt-4 max-w-2xl text-sm leading-7 text-blue-100">
                     These terms explain how you may use the platform, what we expect from you, and how we support a secure,
                     collaborative experience.
                   </p>

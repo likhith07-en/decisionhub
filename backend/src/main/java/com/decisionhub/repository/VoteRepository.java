@@ -9,8 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface VoteRepository extends JpaRepository<Vote, Long> {
-    boolean existsByUserIdAndDecisionId(Long userId, Long decisionId);
-    Optional<Vote> findByUserIdAndDecisionId(Long userId, Long decisionId);
-    List<Vote> findByDecisionId(Long decisionId);
-    long countByDecisionId(Long decisionId);
+    boolean existsByPollIdAndVoterId(Long pollId, Long voterId);
+    Optional<Vote> findByPollIdAndVoterId(Long pollId, Long voterId);
+    List<Vote> findByPollId(Long pollId);
+    long countByPollId(Long pollId);
 }

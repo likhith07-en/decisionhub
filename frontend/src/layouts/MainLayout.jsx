@@ -10,7 +10,7 @@ import IconSidebar from '../components/IconSidebar';
  */
 const MainLayout = () => {
   return (
-    <div className="min-h-screen flex flex-col app-shell" style={{ backgroundColor: 'var(--app-bg)', color: 'var(--app-text)' }}>
+    <div className="min-h-screen flex flex-col app-shell bg-background text-text-primary">
       <Navbar />
       <IconSidebar />
 

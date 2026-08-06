@@ -13,7 +13,17 @@ const DEFAULT_PREFERENCES = {
 function getStoredPreferences() {
   try {
     const item = localStorage.getItem(STORAGE_KEY);
-    return item ? JSON.parse(item) : DEFAULT_PREFERENCES;
+    if (!item) return DEFAULT_PREFERENCES;
+    const parsed = JSON.parse(item);
+
+    // Validate stored values against actual THEMES and UI_MODES
+    const validThemes = Object.values(THEMES);
+    const validModes = Object.values(UI_MODES);
+
+    return {
+      theme: validThemes.includes(parsed.theme) ? parsed.theme : DEFAULT_PREFERENCES.theme,
+      uiMode: validModes.includes(parsed.uiMode) ? parsed.uiMode : DEFAULT_PREFERENCES.uiMode,
+    };
   } catch (error) {
     console.warn('Failed to read theme preferences from localStorage:', error);
     return DEFAULT_PREFERENCES;
@@ -29,7 +39,24 @@ function savePreferences(preferences) {
 }
 
 export function ThemeProvider({ children }) {
-  const [preferences, setPreferencesState] = useState(DEFAULT_PREFERENCES);
+  // Initialize with validated stored preferences immediately (not just defaults)
+  const [preferences, setPreferencesState] = useState(() => {
+    // Auto-migrate: clear any stale old-format data on first load
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const validThemes = Object.values(THEMES);
+        const validModes = Object.values(UI_MODES);
+        if (!validThemes.includes(parsed.theme) || !validModes.includes(parsed.uiMode)) {
+          // Old stale data detected — wipe it and use defaults
+          localStorage.removeItem(STORAGE_KEY);
+          return DEFAULT_PREFERENCES;
+        }
+      }
+    } catch { /* ignore */ }
+    return getStoredPreferences();
+  });
 
   // Load initial preferences
   useEffect(() => {

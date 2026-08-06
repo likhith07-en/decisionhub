@@ -83,10 +83,7 @@ export default function PageTransition({ children }) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center"
-              style={{
-                background:
-                  'radial-gradient(ellipse at 50% 30%, rgba(239,246,255,0.97) 0%, rgba(248,250,252,0.95) 50%, rgba(241,245,249,0.92) 100%)',
-              }}
+              style={{ background: 'var(--loader-bg)' }}
             >
               {/* Ambient floating orbs */}
               <div className="absolute inset-0 overflow-hidden">
@@ -97,7 +94,8 @@ export default function PageTransition({ children }) {
                     scale: [1, 1.2, 0.9, 1],
                   }}
                   transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute left-[15%] top-[20%] h-48 w-48 rounded-full bg-blue-200/25 blur-3xl"
+                  className="absolute left-[15%] top-[20%] h-48 w-48 rounded-full blur-3xl"
+                  style={{ backgroundColor: 'var(--primary-soft)' }}
                 />
                 <motion.div
                   animate={{
@@ -106,7 +104,8 @@ export default function PageTransition({ children }) {
                     scale: [1, 0.85, 1.15, 1],
                   }}
                   transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute bottom-[20%] right-[15%] h-56 w-56 rounded-full bg-violet-200/20 blur-3xl"
+                  className="absolute bottom-[20%] right-[15%] h-56 w-56 rounded-full blur-3xl"
+                  style={{ backgroundColor: 'var(--primary-soft)', opacity: 0.6 }}
                 />
                 <motion.div
                   animate={{
@@ -114,7 +113,8 @@ export default function PageTransition({ children }) {
                     y: [0, -10, 20, 0],
                   }}
                   transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute left-[50%] top-[60%] h-32 w-32 -translate-x-1/2 rounded-full bg-cyan-200/20 blur-3xl"
+                  className="absolute left-[50%] top-[60%] h-32 w-32 -translate-x-1/2 rounded-full blur-3xl"
+                  style={{ backgroundColor: 'var(--primary-soft)', opacity: 0.5 }}
                 />
               </div>
 
@@ -130,7 +130,8 @@ export default function PageTransition({ children }) {
                   initial={{ scale: 0.9 }}
                   animate={{ scale: [0.95, 1.02, 0.98, 1] }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
-                  className="flex h-28 w-28 items-center justify-center rounded-[2.2rem] border border-white/60 bg-white/60 shadow-[0_30px_80px_rgba(15,23,42,0.10),0_0_60px_rgba(59,130,246,0.08)] backdrop-blur-2xl"
+                  className="flex h-28 w-28 items-center justify-center rounded-[2.2rem] border border-border-default backdrop-blur-2xl"
+                  style={{ backgroundColor: 'color-mix(in srgb, var(--surface) 60%, transparent)', boxShadow: 'var(--shadow)' }}
                 >
                   {/* Spinning + color-shifting logo */}
                   <motion.div
@@ -138,7 +139,7 @@ export default function PageTransition({ children }) {
                     transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
                     className="relative"
                   >
-                    <div className="logo-color-shift flex h-16 w-16 items-center justify-center rounded-[1.6rem] bg-gradient-to-br from-blue-500 via-cyan-400 to-violet-500 shadow-[0_8px_30px_rgba(59,130,246,0.25)]">
+                    <div className="logo-color-shift flex h-16 w-16 items-center justify-center rounded-[1.6rem] bg-primary shadow-app">
                       <svg viewBox="0 0 48 48" className="h-9 w-9 text-white" aria-hidden="true">
                         <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.4">
                           <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
@@ -162,7 +163,7 @@ export default function PageTransition({ children }) {
                   transition={{ delay: 0.15, duration: 0.4 }}
                   className="text-center"
                 >
-                  <h2 className="text-xl font-black tracking-tight text-primary">
+                  <h2 className="text-xl font-black tracking-tight text-text-primary">
                     DecisionHub
                   </h2>
                 </motion.div>
@@ -172,7 +173,7 @@ export default function PageTransition({ children }) {
                   initial={{ opacity: 0, scaleX: 0.5 }}
                   animate={{ opacity: 1, scaleX: 1 }}
                   transition={{ delay: 0.2, duration: 0.4 }}
-                  className="w-48 overflow-hidden rounded-full bg-slate-200/60 backdrop-blur-sm"
+                  className="w-48 overflow-hidden rounded-full bg-surface-alt backdrop-blur-sm"
                   style={{ height: '4px' }}
                 >
                   <div className="buffer-progress h-full w-full rounded-full" />
@@ -184,7 +185,7 @@ export default function PageTransition({ children }) {
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.4 }}
-                  className="max-w-xs text-center text-sm font-medium italic text-secondary"
+                  className="max-w-xs text-center text-sm font-medium italic text-muted"
                 >
                   "{quote}"
                 </motion.p>

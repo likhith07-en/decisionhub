@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
       {/* Logo mark */}
-      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-[2rem] bg-blue-600/10 text-primary-hover">
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-[2rem] bg-primary-soft text-primary">
         <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden="true">
           <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
             <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
@@ -27,7 +27,7 @@ export default function NotFound() {
 
       <Link
         to="/dashboard"
-        className="mt-8 flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-app shadow-blue-200 transition hover:bg-primary-hover"
+        className="mt-8 flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-app transition hover:bg-primary-hover"
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />

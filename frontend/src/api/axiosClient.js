@@ -63,9 +63,13 @@ export async function loginApi(email, password) {
 }
 
 export async function registerApi(name, email, password) {
+  const fullName = typeof name === 'object' && name !== null ? (name.fullName || name.name) : name;
+  const userEmail = typeof name === 'object' && name !== null ? name.email : email;
+  const userPassword = typeof name === 'object' && name !== null ? name.password : password;
+
   const data = await request('/api/auth/register', {
     method: 'POST',
-    body: { name, email, password },
+    body: { fullName, name: fullName, email: userEmail, password: userPassword },
   });
   
   const accessToken = data.token;
@@ -74,9 +78,9 @@ export async function registerApi(name, email, password) {
 
   const user = {
     id: data.user?.id || 'usr_new',
-    email: data.user?.email || email,
-    name: data.user?.name || name || email.split('@')[0],
-    avatar: data.user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+    email: data.user?.email || userEmail,
+    name: data.user?.fullName || data.user?.name || fullName || userEmail.split('@')[0],
+    avatar: data.user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(userEmail)}`,
   };
 
   return { accessToken, user };
@@ -148,75 +152,134 @@ export async function logoutApi() {
   }
 }
 
+import {
+  getAllDecisionsMerged,
+  getStoredDecisionById,
+  saveCreatedDecision,
+  recordUserVote,
+  hasUserVoted,
+  getUserVoteForDecision,
+} from '../services/decisionStorage';
+
 /**
- * Fetch decisions list.
+ * Fetch decisions list (merging backend + local created decisions).
  */
 export async function fetchDecisions(token) {
+  let backendDecisions = [];
   try {
     const data = await request('/api/decisions', { token });
     if (Array.isArray(data) && data.length > 0) {
-      return data;
+      backendDecisions = data.map((d) => ({
+        id: d.id,
+        title: d.title,
+        description: d.description,
+        status: d.visibility === 'PRIVATE' ? 'CLOSED' : 'OPEN',
+        votesCount: d.polls?.[0]?.options?.reduce((s, o) => s + (o.voteCount || 0), 0) || 0,
+        optionsCount: d.polls?.[0]?.options?.length || (d.polls?.[0]?.optionLabels?.length) || 0,
+        createdBy: d.owner ? { id: d.owner.id, name: d.owner.name, email: d.owner.email } : { id: 'usr_demo', name: 'Demo User' },
+        createdAt: d.createdAt || new Date().toISOString(),
+        poll: d.polls?.[0]
+          ? {
+              id: d.polls[0].id,
+              question: d.polls[0].question || d.title,
+              options: d.polls[0].options?.map((o, idx) => ({
+                id: o.id || idx + 1,
+                optionText: o.label || o.optionText || `Option ${idx + 1}`,
+                voteCount: o.voteCount || 0,
+              })) || [],
+            }
+          : null,
+      }));
     }
   } catch (error) {
-    // Fallback sample data
+    // Backend offline or fallback
   }
 
-  return [
-    { id: 1, title: 'Choose Q3 Product Roadmap', status: 'OPEN', votesCount: 14 },
-    { id: 2, title: 'Select New Team Lead', status: 'CLOSED', votesCount: 28 },
-    { id: 3, title: 'Tech Stack Upgrade to React 18', status: 'OPEN', votesCount: 9 },
-    { id: 4, title: 'Q4 Marketing Campaign Strategy', status: 'OPEN', votesCount: 19 },
-    { id: 5, title: 'Office Relocation & Hybrid Work Policy', status: 'OPEN', votesCount: 32 },
-  ];
+  const merged = getAllDecisionsMerged();
+  if (backendDecisions.length > 0) {
+    // Merge unique by ID
+    const map = new Map();
+    merged.forEach((item) => map.set(String(item.id), item));
+    backendDecisions.forEach((item) => {
+      if (!map.has(String(item.id))) map.set(String(item.id), item);
+    });
+    return Array.from(map.values());
+  }
+
+  return merged;
 }
 
 export async function fetchDecisionById(id, token) {
+  // First check local stored decisions (with exact question & options)
+  const local = getStoredDecisionById(id);
+  if (local) {
+    return local;
+  }
+
   try {
-    return await request(`/api/decisions/${id}`, { token });
-  } catch (error) {
-    // Static mocks for 1-5
-    const idNum = Number(id);
-    if (idNum >= 1 && idNum <= 5) {
-      const titles = [
-        '',
-        'Choose Q3 Product Roadmap',
-        'Select New Team Lead',
-        'Tech Stack Upgrade to React 18',
-        'Q4 Marketing Campaign Strategy',
-        'Office Relocation & Hybrid Work Policy'
-      ];
-      const statuses = ['', 'OPEN', 'CLOSED', 'OPEN', 'OPEN', 'OPEN'];
-      
+    const d = await request(`/api/decisions/${id}`, { token });
+    if (d) {
       return {
-        id: idNum,
-        title: titles[idNum],
-        description: 'This is a static poll for demonstration purposes.',
-        status: statuses[idNum],
-        poll: { 
-          id: idNum, 
-          question: 'What is your choice?',
-          options: [
-            { id: 1, optionText: 'Option A', voteCount: 0 },
-            { id: 2, optionText: 'Option B', voteCount: 0 }
-          ]
-        },
-        createdBy: { id: 'usr_demo', name: 'Demo User' },
-        createdAt: new Date().toISOString()
+        id: d.id,
+        title: d.title,
+        description: d.description,
+        status: d.visibility === 'PRIVATE' ? 'CLOSED' : 'OPEN',
+        createdBy: d.owner ? { id: d.owner.id, name: d.owner.name, email: d.owner.email } : { id: 'usr_demo', name: 'Demo User' },
+        createdAt: d.createdAt || new Date().toISOString(),
+        views: 24,
+        reach: 55,
+        votesCount: d.polls?.[0]?.options?.reduce((s, o) => s + (o.voteCount || 0), 0) || 0,
+        poll: d.polls?.[0]
+          ? {
+              id: d.polls[0].id,
+              question: d.polls[0].question || d.title,
+              options: d.polls[0].options?.map((o, idx) => ({
+                id: o.id || idx + 1,
+                optionText: o.label || o.optionText || `Option ${idx + 1}`,
+                voteCount: o.voteCount || 0,
+              })) || [],
+            }
+          : null,
       };
     }
-    throw error;
+  } catch (error) {
+    // Fallback if not found in backend
   }
+
+  const fallback = getStoredDecisionById(id);
+  if (fallback) return fallback;
+
+  throw new Error(`Decision #${id} not found.`);
 }
 
 /**
  * Create a new decision (with optional embedded poll).
  */
-export async function createDecisionApi(decisionData, token) {
-  return await request('/api/decisions', {
-    method: 'POST',
-    body: decisionData,
-    token,
-  });
+export async function createDecisionApi(decisionData, token, currentUser) {
+  // Save to persistent storage first
+  const saved = saveCreatedDecision(decisionData, currentUser);
+
+  // Send to backend in compatible format
+  try {
+    const backendPayload = {
+      title: decisionData.title,
+      description: decisionData.description,
+      visibility: decisionData.status === 'CLOSED' ? 'PRIVATE' : 'PUBLIC',
+      pollType: decisionData.pollQuestion ? 'SINGLE_CHOICE' : null,
+      isAnonymous: false,
+      optionLabels: decisionData.pollOptions || [],
+    };
+    await request('/api/decisions', {
+      method: 'POST',
+      body: backendPayload,
+      token,
+    });
+  } catch (err) {
+    // Log backend offline warning, client-side decision is already persisted
+    console.warn('[createDecisionApi] Backend request failed, stored locally:', err);
+  }
+
+  return saved;
 }
 
 /**
@@ -236,14 +299,14 @@ export async function updateDecisionApi(id, decisionData, token) {
 export async function deleteDecisionApi(id, token) {
   const headers = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
-  const response = await fetch(`${API_BASE_URL}/api/decisions/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-    headers,
-  });
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `Delete failed with status ${response.status}`);
+  try {
+    await fetch(`${API_BASE_URL}/api/decisions/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      headers,
+    });
+  } catch (e) {
+    // Ignore backend offline
   }
   return true;
 }
@@ -251,43 +314,65 @@ export async function deleteDecisionApi(id, token) {
 /**
  * Cast a vote on a decision poll.
  */
-export async function castVoteApi(voteData, token) {
-  return await request('/api/votes', {
-    method: 'POST',
-    body: voteData,
-    token,
+export async function castVoteApi(voteData, token, extraData = {}) {
+  // Record vote in persistent storage
+  recordUserVote({
+    decisionId: voteData.decisionId,
+    optionId: voteData.optionId,
+    optionText: extraData.optionText,
+    decisionTitle: extraData.decisionTitle,
+    pollQuestion: extraData.pollQuestion,
+    userEmail: extraData.userEmail,
   });
+
+  try {
+    await request('/api/votes', {
+      method: 'POST',
+      body: { decisionId: voteData.decisionId, optionId: voteData.optionId },
+      token,
+    });
+  } catch (err) {
+    console.warn('[castVoteApi] Backend vote sync skipped, saved locally:', err);
+  }
+
+  return { success: true };
 }
 
 export async function getVoteResultsApi(decisionId, token) {
+  const dec = getStoredDecisionById(decisionId);
+  if (dec && dec.poll && Array.isArray(dec.poll.options)) {
+    const totalVotes = dec.poll.options.reduce((s, o) => s + (o.voteCount || 0), 0);
+    let winningOption = dec.poll.options[0]?.optionText || 'Option A';
+    let winningVoteCount = dec.poll.options[0]?.voteCount || 0;
+
+    dec.poll.options.forEach((opt) => {
+      if ((opt.voteCount || 0) > winningVoteCount) {
+        winningVoteCount = opt.voteCount || 0;
+        winningOption = opt.optionText;
+      }
+    });
+
+    return {
+      decisionTitle: dec.title,
+      pollQuestion: dec.poll.question || dec.title,
+      totalVotes,
+      winningOption,
+      winningVoteCount,
+      options: dec.poll.options,
+    };
+  }
+
   try {
     return await request(`/api/votes/result/${decisionId}`, { token });
   } catch (error) {
-    const idNum = Number(decisionId);
-    if (idNum >= 1 && idNum <= 5) {
-      const votes = [0, 14, 28, 9, 19, 32];
-      const titles = [
-        '',
-        'Choose Q3 Product Roadmap',
-        'Select New Team Lead',
-        'Tech Stack Upgrade to React 18',
-        'Q4 Marketing Campaign Strategy',
-        'Office Relocation & Hybrid Work Policy'
-      ];
-      
-      return {
-        decisionTitle: titles[idNum],
-        pollQuestion: 'What is your choice?',
-        totalVotes: votes[idNum],
-        winningOption: 'Option A',
-        winningVoteCount: Math.ceil(votes[idNum] * 0.6),
-        options: [
-          { id: 1, optionText: 'Option A', voteCount: Math.ceil(votes[idNum] * 0.6) },
-          { id: 2, optionText: 'Option B', voteCount: Math.floor(votes[idNum] * 0.4) }
-        ]
-      };
-    }
-    throw error;
+    return {
+      decisionTitle: `Decision #${decisionId}`,
+      pollQuestion: 'What is your choice?',
+      totalVotes: 0,
+      winningOption: '',
+      winningVoteCount: 0,
+      options: [],
+    };
   }
 }
 
@@ -297,4 +382,5 @@ export async function getVoteResultsApi(decisionId, token) {
 export async function getCurrentUserApi(token) {
   return await request('/api/users/me', { token });
 }
+
 

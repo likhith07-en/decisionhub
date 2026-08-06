@@ -5,7 +5,7 @@ import IconSidebar from '../components/IconSidebar';
 
 export default function PrivacyPolicy() {
   return (
-    <div className="page-shell flex flex-col sm:pr-[60px]">
+    <div className="page-shell min-h-screen flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">

@@ -15,10 +15,13 @@
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
+    --overlay: rgba(15, 23, 42, 0.25);
   }
 
   html, body, #root {
-    @apply h-full min-h-screen bg-background text-primary transition-colors duration-200 antialiased;
+    @apply h-full min-h-screen transition-colors duration-200 antialiased;
+    background-color: var(--background);
+    color: var(--text-primary);
     font-family: var(--app-font-family, 'Inter', system-ui, sans-serif);
   }
 
@@ -30,26 +33,55 @@
 
 @layer components {
   .app-background {
-    @apply bg-background text-primary;
+    background-color: var(--background);
+    color: var(--text-primary);
   }
   
   .app-surface {
-    @apply bg-surface text-primary border border-default;
+    background-color: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
   }
   
   .app-card {
-    @apply bg-card text-primary rounded-2xl border border-default shadow-app;
+    @apply rounded-2xl;
+    background-color: var(--card);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
   }
 
   .app-button {
-    @apply inline-flex items-center justify-center rounded-xl bg-primary text-white font-medium hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed transition-all;
+    @apply inline-flex items-center justify-center rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all;
+    background-color: var(--primary);
+    color: #ffffff;
+    &:hover { background-color: var(--primary-hover); }
+    &:focus { 
+      --tw-ring-color: var(--primary);
+      --tw-ring-offset-color: var(--background);
+    }
   }
 
   .app-button-outline {
-    @apply inline-flex items-center justify-center rounded-xl border border-default bg-transparent text-primary hover:bg-surface-alt focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed transition-all;
+    @apply inline-flex items-center justify-center rounded-xl bg-transparent font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    &:hover { background-color: var(--surface-alt); }
+    &:focus { 
+      --tw-ring-color: var(--primary);
+      --tw-ring-offset-color: var(--background);
+    }
   }
 
   .app-input {
-    @apply w-full rounded-xl border border-default bg-surface text-primary placeholder-text-secondary focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all;
+    @apply w-full rounded-xl focus:outline-none transition-all;
+    border: 1px solid var(--border);
+    background-color: var(--surface);
+    color: var(--text-primary);
+    &::placeholder { color: var(--text-secondary); }
+    &:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
   }
 }

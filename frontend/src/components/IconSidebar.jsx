@@ -76,8 +76,15 @@ const itemVariants = {
   },
 };
 
+const UI_MODE_COLORS = {
+  black: '#0f172a',
+  green: '#16a34a',
+  saffron: '#f59e0b',
+  royal: '#2563eb',
+};
+
 export default function IconSidebar() {
-  const { theme, uiMode, setUiMode, cycleTheme } = useTheme();
+  const { theme, uiMode, setTheme, setUiMode, cycleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [activePanel, setActivePanel] = useState('settings');
 
@@ -94,12 +101,13 @@ export default function IconSidebar() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="fixed right-0 top-0 z-30 hidden h-screen w-[60px] flex-col items-center justify-center gap-3 border-l border-slate-200/40 bg-white/40 py-4 backdrop-blur-xl sm:flex"
+      className="fixed right-0 top-0 z-30 hidden h-screen w-[60px] flex-col items-center justify-center gap-3 border-l border-border-default py-4 backdrop-blur-xl sm:flex"
+      style={{ backgroundColor: 'color-mix(in srgb, var(--surface) 40%, transparent)' }}
     >
       {/* DecisionHub micro-logo at top */}
       <motion.div
         variants={itemVariants}
-        className="mb-auto mt-3 flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/10 to-violet-500/10 text-primary"
+        className="mb-auto mt-3 flex h-9 w-9 items-center justify-center rounded-xl bg-primary-soft text-primary"
       >
         <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden="true">
           <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
@@ -144,24 +152,24 @@ export default function IconSidebar() {
     </motion.aside>
 
     {isOpen && (
-      <div className="fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-sm" onClick={closePanel} />
+      <div className="fixed inset-0 z-40 backdrop-blur-sm" style={{ backgroundColor: 'var(--overlay)' }} onClick={closePanel} />
     )}
 
     <motion.aside
       initial={{ x: 320, opacity: 0 }}
       animate={{ x: isOpen ? 0 : 320, opacity: isOpen ? 1 : 0 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="fixed right-0 top-0 z-50 h-screen w-[320px] border-l p-5 shadow-2xl backdrop-blur-xl"
-      style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
+      className="fixed right-0 top-0 z-50 h-screen w-[320px] border-l border-border-default p-5 shadow-2xl backdrop-blur-xl"
+      style={{ backgroundColor: 'var(--surface)', color: 'var(--text-primary)' }}
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em]" style={{ color: 'var(--app-muted)' }}>Quick tools</p>
-          <h3 className="text-lg font-black" style={{ color: 'var(--app-text)' }}>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted">Quick tools</p>
+          <h3 className="text-lg font-black text-text-primary">
             {activePanel === 'settings' ? 'Preferences' : activePanel === 'help' ? 'Help & Info' : 'Notifications'}
           </h3>
         </div>
-        <button onClick={closePanel} className="rounded-xl p-2" style={{ color: 'var(--app-muted)' }} aria-label="Close panel">
+        <button onClick={closePanel} className="rounded-xl p-2 text-muted hover:text-text-primary" aria-label="Close panel">
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -171,67 +179,44 @@ export default function IconSidebar() {
       <div className="mt-6 space-y-4">
         {activePanel === 'settings' ? (
           <>
-            <div className="rounded-2xl border p-4" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)' }}>
-              <p className="text-sm font-semibold" style={{ color: 'var(--app-text)' }}>Theme</p>
+            <div className="rounded-2xl border border-border-default p-4 bg-surface-alt">
+              <p className="text-sm font-semibold text-text-primary">Theme</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
-                {['default', 'light', 'dark'].map((theme) => (
+                {['default', 'light', 'dark'].map((t) => (
                   <button
-                    key={theme}
-                    onClick={() => setPreferences({ theme })}
-                    className={`rounded-xl border px-3 py-2 text-sm font-semibold ${preferences.theme === theme ? 'border-primary bg-primary-soft text-primary-hover' : ''}`}
-                    style={preferences.theme === theme ? { borderColor: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' } : { borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
+                    key={t}
+                    onClick={() => setTheme(t)}
+                    className="rounded-xl border px-3 py-2 text-sm font-semibold transition-all"
+                    style={theme === t
+                      ? { borderColor: 'var(--primary)', backgroundColor: 'var(--primary-soft)', color: 'var(--primary)' }
+                      : { borderColor: 'var(--border)', backgroundColor: 'var(--surface)', color: 'var(--text-primary)' }
+                    }
                   >
-                    {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                    {t.charAt(0).toUpperCase() + t.slice(1)}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="rounded-2xl border p-4" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)' }}>
-              <p className="text-sm font-semibold" style={{ color: 'var(--app-text)' }}>Font</p>
-              <div className="mt-3 space-y-3">
-                <label className="block text-sm" style={{ color: 'var(--app-muted)' }}>
-                  <span className="mb-1 block">Family</span>
-                  <select
-                    value={preferences.fontFamily}
-                    onChange={(e) => setPreferences({ fontFamily: e.target.value })}
-                    className="w-full rounded-xl border px-3 py-2 text-sm"
-                    style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
-                  >
-                    {['Inter', 'Poppins', 'Roboto', 'Space Grotesk'].map((font) => (
-                      <option key={font} value={font}>{font}</option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="block text-sm" style={{ color: 'var(--app-muted)' }}>
-                  <span className="mb-1 block">Size</span>
-                  <select
-                    value={preferences.fontSize}
-                    onChange={(e) => setPreferences({ fontSize: e.target.value })}
-                    className="w-full rounded-xl border px-3 py-2 text-sm"
-                    style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
-                  >
-                    <option value="sm">Small</option>
-                    <option value="md">Medium</option>
-                    <option value="lg">Large</option>
-                  </select>
-                </label>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border p-4" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)' }}>
-              <p className="text-sm font-semibold" style={{ color: 'var(--app-text)' }}>UI Mode</p>
-              <p className="text-xs text-secondary">Contrast and accent tone for buttons, highlights, and hero elements.</p>
+            <div className="rounded-2xl border border-border-default p-4 bg-surface-alt">
+              <p className="text-sm font-semibold text-text-primary">UI Mode</p>
+              <p className="text-xs text-muted">Contrast and accent tone for buttons, highlights, and hero elements.</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {['black', 'green', 'saffron', 'royal'].map((mode) => (
                   <button
                     key={mode}
                     onClick={() => setUiMode(mode)}
-                    className={`h-8 w-8 rounded-full shadow-sm transition-transform hover:scale-110 ${uiMode === mode ? 'ring-2 ring-primary ring-offset-2' : ''}`}
-                    style={preferences.uiMode === mode ? { borderColor: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' } : { borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface)', color: 'var(--app-text)' }}
+                    className="flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-all"
+                    style={uiMode === mode
+                      ? { borderColor: 'var(--primary)', backgroundColor: 'var(--primary-soft)', color: 'var(--primary)' }
+                      : { borderColor: 'var(--border)', backgroundColor: 'var(--surface)', color: 'var(--text-primary)' }
+                    }
                   >
-                    {mode}
+                    <span
+                      className="h-3 w-3 shrink-0 rounded-full"
+                      style={{ backgroundColor: UI_MODE_COLORS[mode] }}
+                    />
+                    {mode.charAt(0).toUpperCase() + mode.slice(1)}
                   </button>
                 ))}
               </div>
@@ -239,31 +224,31 @@ export default function IconSidebar() {
           </>
         ) : activePanel === 'help' ? (
           <div className="space-y-4">
-            <div className="rounded-2xl border p-4 text-sm" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)', color: 'var(--app-muted)' }}>
-              <p className="font-semibold" style={{ color: 'var(--app-text)' }}>Need help?</p>
+            <div className="rounded-2xl border border-border-default p-4 text-sm bg-surface-alt text-muted">
+              <p className="font-semibold text-text-primary">Need help?</p>
               <p className="mt-2">Access support resources and policy pages directly from this panel.</p>
             </div>
 
-            <div className="rounded-2xl border border-default bg-background p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">Quick links</p>
+            <div className="rounded-2xl border border-border-default bg-background p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">Quick links</p>
               <div className="mt-4 space-y-3">
                 <Link
                   to="/contact-support"
-                  className="block rounded-2xl border border-default bg-surface px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary-soft hover:bg-primary-soft"
+                  className="block rounded-2xl border border-border-default bg-surface px-4 py-3 text-sm font-semibold text-text-primary transition hover:border-primary-soft hover:bg-primary-soft hover:text-primary"
                   onClick={closePanel}
                 >
                   Contact Support
                 </Link>
                 <Link
                   to="/privacy-policy"
-                  className="block rounded-2xl border border-default bg-surface px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary-soft hover:bg-primary-soft"
+                  className="block rounded-2xl border border-border-default bg-surface px-4 py-3 text-sm font-semibold text-text-primary transition hover:border-primary-soft hover:bg-primary-soft hover:text-primary"
                   onClick={closePanel}
                 >
                   Privacy Policy
                 </Link>
                 <Link
                   to="/terms-conditions"
-                  className="block rounded-2xl border border-default bg-surface px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary-soft hover:bg-primary-soft"
+                  className="block rounded-2xl border border-border-default bg-surface px-4 py-3 text-sm font-semibold text-text-primary transition hover:border-primary-soft hover:bg-primary-soft hover:text-primary"
                   onClick={closePanel}
                 >
                   Terms & Conditions
@@ -272,8 +257,8 @@ export default function IconSidebar() {
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border p-4 text-sm" style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-surface-alt)', color: 'var(--app-muted)' }}>
-            <p className="font-semibold" style={{ color: 'var(--app-text)' }}>Notifications</p>
+          <div className="rounded-2xl border border-border-default p-4 text-sm bg-surface-alt text-muted">
+            <p className="font-semibold text-text-primary">Notifications</p>
             <p className="mt-2">No new alerts right now. This area is ready for future backend-driven notifications.</p>
           </div>
         )}

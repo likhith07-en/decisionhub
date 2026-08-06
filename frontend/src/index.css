@@ -16,12 +16,13 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--text-secondary);
+  opacity: 0.4;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  opacity: 0.6;
 }
 
 /* ─── Logo Color Shift Animation ─── */
@@ -73,10 +74,10 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    #3b82f6 20%,
-    #06b6d4 40%,
-    #8b5cf6 60%,
-    #3b82f6 80%,
+    var(--primary) 20%,
+    var(--primary-hover) 40%,
+    var(--primary) 60%,
+    var(--primary-hover) 80%,
     transparent 100%
   );
   background-size: 200% 100%;
@@ -107,19 +108,24 @@
 /* ─── Icon Sidebar Glow ─── */
 @keyframes iconGlow {
   0%, 100% {
-    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+    box-shadow: 0 0 0 rgba(var(--primary), 0);
   }
   50% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+    box-shadow: var(--shadow);
   }
 }
 
 .icon-sidebar-btn {
-  @apply relative flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200/60 bg-white/80 text-slate-500 backdrop-blur-sm transition-all duration-300;
+  @apply relative flex h-10 w-10 items-center justify-center rounded-2xl border border-border-default backdrop-blur-sm transition-all duration-300;
+  background-color: var(--surface);
+  color: var(--text-secondary);
 }
 
 .icon-sidebar-btn:hover {
-  @apply border-blue-200 bg-blue-50/80 text-blue-600 scale-110;
+  border-color: var(--primary-soft);
+  background-color: var(--primary-soft);
+  color: var(--primary);
+  transform: scale(1.1);
   animation: iconGlow 2s ease-in-out infinite;
 }
 
@@ -143,7 +149,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ef4444;
+  background: var(--danger);
   animation: notifPulse 2s ease-in-out infinite;
 }
 
@@ -155,6 +161,6 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ef4444;
+  background: var(--danger);
   z-index: 1;
 }

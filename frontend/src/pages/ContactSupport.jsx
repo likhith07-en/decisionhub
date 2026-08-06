@@ -4,11 +4,10 @@ import Footer from '../components/Footer';
 import IconSidebar from '../components/IconSidebar';
 
 export default function ContactSupport() {
-  const inputClass =
-    'w-full rounded-2xl border border-default bg-background px-4 py-3 text-primary outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100';
+  const inputClass = 'app-input px-4 py-3';
 
   return (
-    <div className="page-shell flex flex-col sm:pr-[60px]">
+    <div className="page-shell min-h-screen flex flex-col sm:pr-[60px]">
       <Navbar />
       <IconSidebar />
       <div className="flex flex-1">
@@ -140,7 +139,7 @@ export default function ContactSupport() {
                     <p className="text-xs text-secondary">Note: UI only. Backend integration can be added later without changing layout.</p>
                     <button
                       type="button"
-                      className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-app shadow-blue-200/20 transition hover:bg-primary-hover"
+                      className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-app transition hover:bg-primary-hover"
                     >
                       Send Request
                     </button>

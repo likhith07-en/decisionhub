@@ -5,22 +5,25 @@ import java.time.LocalDateTime;
 public class VoteResponse {
 
     private Long id;
-    private Long userId;
-    private Long decisionId;
-    private Long optionId;
-    private String optionText;
-    private LocalDateTime createdAt;
+    private Long pollId;
+    private Long pollOptionId;
+    private Long voterId;
+    private String optionLabel;
+    private Integer rating;
+    private LocalDateTime votedAt;
 
     public VoteResponse() {
     }
 
-    public VoteResponse(Long id, Long userId, Long decisionId, Long optionId, String optionText, LocalDateTime createdAt) {
+    public VoteResponse(Long id, Long pollId, Long pollOptionId, Long voterId,
+                        String optionLabel, Integer rating, LocalDateTime votedAt) {
         this.id = id;
-        this.userId = userId;
-        this.decisionId = decisionId;
-        this.optionId = optionId;
-        this.optionText = optionText;
-        this.createdAt = createdAt;
+        this.pollId = pollId;
+        this.pollOptionId = pollOptionId;
+        this.voterId = voterId;
+        this.optionLabel = optionLabel;
+        this.rating = rating;
+        this.votedAt = votedAt;
     }
 
     public Long getId() {
@@ -31,43 +34,51 @@ public class VoteResponse {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getPollId() {
+        return pollId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setPollId(Long pollId) {
+        this.pollId = pollId;
     }
 
-    public Long getDecisionId() {
-        return decisionId;
+    public Long getPollOptionId() {
+        return pollOptionId;
     }
 
-    public void setDecisionId(Long decisionId) {
-        this.decisionId = decisionId;
+    public void setPollOptionId(Long pollOptionId) {
+        this.pollOptionId = pollOptionId;
     }
 
-    public Long getOptionId() {
-        return optionId;
+    public Long getVoterId() {
+        return voterId;
     }
 
-    public void setOptionId(Long optionId) {
-        this.optionId = optionId;
+    public void setVoterId(Long voterId) {
+        this.voterId = voterId;
     }
 
-    public String getOptionText() {
-        return optionText;
+    public String getOptionLabel() {
+        return optionLabel;
     }
 
-    public void setOptionText(String optionText) {
-        this.optionText = optionText;
+    public void setOptionLabel(String optionLabel) {
+        this.optionLabel = optionLabel;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public Integer getRating() {
+        return rating;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public LocalDateTime getVotedAt() {
+        return votedAt;
+    }
+
+    public void setVotedAt(LocalDateTime votedAt) {
+        this.votedAt = votedAt;
     }
 }

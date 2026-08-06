@@ -32,7 +32,7 @@ export default function Navbar({ onToggleSidebar }) {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
             onClick={() => setIsCollapsed(false)}
-            className="fixed left-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200/60 bg-white/80 text-secondary shadow-app shadow-slate-200/40 backdrop-blur-xl transition-all duration-200 hover:border-primary-soft hover:bg-primary-soft hover:text-primary hover:scale-105"
+            className="fixed left-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-2xl border border-border-default bg-surface/80 text-muted shadow-app backdrop-blur-xl transition-all duration-200 hover:border-primary-soft hover:bg-primary-soft hover:text-primary hover:scale-105"
             aria-label="Show navbar"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,8 +50,8 @@ export default function Navbar({ onToggleSidebar }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -80, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="sticky top-0 z-20 border-b backdrop-blur-xl"
-            style={{ backgroundColor: 'rgba(255,255,255,0.82)', borderColor: 'var(--app-border)', color: 'var(--app-text)' }}
+            className="sticky top-0 z-20 border-b border-border-default backdrop-blur-xl"
+            style={{ backgroundColor: 'color-mix(in srgb, var(--surface) 82%, transparent)', color: 'var(--text-primary)' }}
           >
             <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
               {/* Left: hamburger + sidebar toggle + logo */}
@@ -59,8 +59,7 @@ export default function Navbar({ onToggleSidebar }) {
                 {/* Collapse navbar button */}
                 <button
                   onClick={() => setIsCollapsed(true)}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200"
-                  style={{ color: 'var(--app-muted)' }}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl text-muted transition-all duration-200 hover:text-text-primary"
                   aria-label="Hide navbar"
                   title="Hide navbar"
                 >
@@ -70,7 +69,7 @@ export default function Navbar({ onToggleSidebar }) {
                 </button>
 
                 <Link to="/dashboard" className="flex items-center gap-2.5 ml-1">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-app shadow-blue-200/50">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white shadow-app">
                     <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden="true">
                       <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5">
                         <circle cx="10" cy="24" r="4" fill="currentColor" stroke="none" />
@@ -84,7 +83,7 @@ export default function Navbar({ onToggleSidebar }) {
                       </g>
                     </svg>
                   </div>
-                  <span className="text-lg font-black tracking-tight" style={{ color: 'var(--app-text)' }}>DecisionHub</span>
+                  <span className="text-lg font-black tracking-tight text-text-primary">DecisionHub</span>
                 </Link>
               </div>
 
@@ -93,21 +92,35 @@ export default function Navbar({ onToggleSidebar }) {
                 <Link
                   to="/dashboard"
                   className={navLinkClass('/dashboard')}
-                  style={isActive('/dashboard') ? { color: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)' } : { color: 'var(--app-muted)' }}
+                  style={isActive('/dashboard') ? { color: 'var(--primary)', backgroundColor: 'var(--primary-soft)' } : { color: 'var(--text-secondary)' }}
                 >
                   Dashboard
                 </Link>
                 <Link
+                  to="/analysis"
+                  className={navLinkClass('/analysis')}
+                  style={isActive('/analysis') ? { color: 'var(--primary)', backgroundColor: 'var(--primary-soft)' } : { color: 'var(--text-secondary)' }}
+                >
+                  Analysis
+                </Link>
+                <Link
+                  to="/analytics"
+                  className={navLinkClass('/analytics')}
+                  style={isActive('/analytics') ? { color: 'var(--primary)', backgroundColor: 'var(--primary-soft)' } : { color: 'var(--text-secondary)' }}
+                >
+                  Analytics
+                </Link>
+                <Link
                   to="/decisions/create"
                   className={navLinkClass('/decisions/create')}
-                  style={isActive('/decisions/create') ? { color: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)' } : { color: 'var(--app-muted)' }}
+                  style={isActive('/decisions/create') ? { color: 'var(--primary)', backgroundColor: 'var(--primary-soft)' } : { color: 'var(--text-secondary)' }}
                 >
                   Create
                 </Link>
                 <Link
                   to="/profile"
                   className={navLinkClass('/profile')}
-                  style={isActive('/profile') ? { color: 'var(--app-accent)', backgroundColor: 'var(--app-accent-soft)' } : { color: 'var(--app-muted)' }}
+                  style={isActive('/profile') ? { color: 'var(--primary)', backgroundColor: 'var(--primary-soft)' } : { color: 'var(--text-secondary)' }}
                 >
                   Profile
                 </Link>
@@ -117,7 +130,8 @@ export default function Navbar({ onToggleSidebar }) {
               <div className="flex items-center gap-3">
                 <div
                   className="hidden rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] sm:block"
-                  style={{ borderColor: 'var(--app-border)', backgroundColor: 'var(--app-accent-soft)', color: 'var(--app-accent)' }}
+                  style={{ borderColor: 'var(--border)', backgroundColor: 'var(--primary-soft)', color: 'var(--primary)' }}
+                >
                   {theme} · {uiMode}
                 </div>
 
@@ -126,23 +140,23 @@ export default function Navbar({ onToggleSidebar }) {
                     <img
                       src={user.avatar}
                       alt={user.name || user.email}
-                      className="h-8 w-8 rounded-full bg-primary-soft ring-2 ring-blue-500/20"
+                      className="h-8 w-8 rounded-full bg-primary-soft"
+                      style={{ boxShadow: '0 0 0 2px var(--primary-soft)' }}
                     />
                   ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-sm font-bold text-white">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
                       {user?.email?.charAt(0).toUpperCase() || 'U'}
                     </div>
                   )}
                   <div className="hidden sm:block">
-                    <p className="text-sm font-semibold leading-tight" style={{ color: 'var(--app-text)' }}>{user?.name || 'User'}</p>
-                    <p className="text-xs leading-tight" style={{ color: 'var(--app-muted)' }}>{user?.email}</p>
+                    <p className="text-sm font-semibold leading-tight text-text-primary">{user?.name || 'User'}</p>
+                    <p className="text-xs leading-tight text-muted">{user?.email}</p>
                   </div>
                 </div>
 
                 <button
                   onClick={logout}
-                  className="rounded-xl border px-3 py-1.5 text-xs font-bold backdrop-blur-sm transition-all duration-200 bg-surface"
-                  style={{ borderColor: 'var(--app-border)', color: 'var(--app-muted)' }}
+                  className="rounded-xl border border-border-default px-3 py-1.5 text-xs font-bold bg-surface text-muted backdrop-blur-sm transition-all duration-200 hover:bg-surface-alt hover:text-text-primary"
                 >
                   Log Out
                 </button>

@@ -3,16 +3,16 @@ package com.decisionhub.dto;
 public class OptionDto {
 
     private Long id;
-    private String optionText;
-    private Integer voteCount;
+    private String label;
+    private String description;
 
     public OptionDto() {
     }
 
-    public OptionDto(Long id, String optionText, Integer voteCount) {
+    public OptionDto(Long id, String label, String description) {
         this.id = id;
-        this.optionText = optionText;
-        this.voteCount = voteCount;
+        this.label = label;
+        this.description = description;
     }
 
     public Long getId() {
@@ -23,19 +23,19 @@ public class OptionDto {
         this.id = id;
     }
 
-    public String getOptionText() {
-        return optionText;
+    public String getLabel() {
+        return label;
     }
 
-    public void setOptionText(String optionText) {
-        this.optionText = optionText;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public Integer getVoteCount() {
-        return voteCount;
+    public String getDescription() {
+        return description;
     }
 
-    public void setVoteCount(Integer voteCount) {
-        this.voteCount = voteCount;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

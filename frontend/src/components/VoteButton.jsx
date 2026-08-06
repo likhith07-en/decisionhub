@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * VoteButton — matches original primary button design system.
+ * VoteButton — theme-aware primary button.
  */
 const VoteButton = ({ onClick, disabled, isLoading }) => {
   return (
@@ -10,9 +10,10 @@ const VoteButton = ({ onClick, disabled, isLoading }) => {
       disabled={disabled}
       className={`flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3.5 font-bold text-white shadow-app transition disabled:opacity-70 ${
         disabled && !isLoading
-          ? 'bg-slate-300 shadow-none cursor-not-allowed'
-          : 'bg-primary shadow-blue-200 hover:bg-primary-hover'
+          ? 'shadow-none cursor-not-allowed'
+          : 'bg-primary hover:bg-primary-hover'
       }`}
+      style={disabled && !isLoading ? { backgroundColor: 'var(--disabled-bg)' } : {}}
     >
       {isLoading ? (
         <>

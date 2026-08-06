@@ -1,6 +1,7 @@
 package com.decisionhub.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,27 +13,29 @@ public class Poll {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String question;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "decision_id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "decision_id", nullable = false)
     private Decision decision;
 
-    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Option> options = new ArrayList<>();
+    @Column(name = "poll_type", length = 20)
+    private String pollType = "SINGLE";
+
+    @Column(name = "is_anonymous")
+    private Boolean isAnonymous = false;
+
+    @Column(name = "ends_at")
+    private LocalDateTime endsAt;
+
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PollOption> pollOptions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Vote> votes = new ArrayList<>();
 
     public Poll() {
     }
 
-    public Poll(Long id, String question, Decision decision, List<Option> options) {
-        this.id = id;
-        this.question = question;
-        this.decision = decision;
-        if (options != null) {
-            this.options = options;
-        }
-    }
+    // --- Getters and Setters ---
 
     public Long getId() {
         return id;
@@ -40,14 +43,6 @@ public class Poll {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
     }
 
     public Decision getDecision() {
@@ -58,21 +53,53 @@ public class Poll {
         this.decision = decision;
     }
 
-    public List<Option> getOptions() {
-        return options;
+    public String getPollType() {
+        return pollType;
     }
 
-    public void setOptions(List<Option> options) {
-        this.options = options;
+    public void setPollType(String pollType) {
+        this.pollType = pollType;
     }
 
-    public void addOption(Option option) {
-        options.add(option);
-        option.setPoll(this);
+    public Boolean getIsAnonymous() {
+        return isAnonymous;
     }
 
-    public void removeOption(Option option) {
-        options.remove(option);
-        option.setPoll(null);
+    public void setIsAnonymous(Boolean isAnonymous) {
+        this.isAnonymous = isAnonymous;
+    }
+
+    public LocalDateTime getEndsAt() {
+        return endsAt;
+    }
+
+    public void setEndsAt(LocalDateTime endsAt) {
+        this.endsAt = endsAt;
+    }
+
+    public List<PollOption> getPollOptions() {
+        return pollOptions;
+    }
+
+    public void setPollOptions(List<PollOption> pollOptions) {
+        this.pollOptions = pollOptions;
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
+    public void addPollOption(PollOption pollOption) {
+        pollOptions.add(pollOption);
+        pollOption.setPoll(this);
+    }
+
+    public void removePollOption(PollOption pollOption) {
+        pollOptions.remove(pollOption);
+        pollOption.setPoll(null);
     }
 }

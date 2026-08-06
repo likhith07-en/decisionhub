@@ -1,29 +1,37 @@
 package com.decisionhub.dto;
 
-import com.decisionhub.entity.DecisionStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class DecisionResponse {
 
     private Long id;
     private String title;
     private String description;
-    private DecisionStatus status;
+    private String visibility;
+    private Boolean isDeleted;
     private LocalDateTime createdAt;
-    private UserResponse createdBy;
-    private PollResponse poll;
+    private UserResponse owner;
+    private Long categoryId;
+    private String categoryName;
+    private List<PollResponse> polls;
 
     public DecisionResponse() {
     }
 
-    public DecisionResponse(Long id, String title, String description, DecisionStatus status, LocalDateTime createdAt, UserResponse createdBy, PollResponse poll) {
+    public DecisionResponse(Long id, String title, String description, String visibility, Boolean isDeleted,
+                            LocalDateTime createdAt, UserResponse owner, Long categoryId, String categoryName,
+                            List<PollResponse> polls) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.visibility = visibility;
+        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.poll = poll;
+        this.owner = owner;
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.polls = polls;
     }
 
     public Long getId() {
@@ -50,12 +58,20 @@ public class DecisionResponse {
         this.description = description;
     }
 
-    public DecisionStatus getStatus() {
-        return status;
+    public String getVisibility() {
+        return visibility;
     }
 
-    public void setStatus(DecisionStatus status) {
-        this.status = status;
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -66,19 +82,35 @@ public class DecisionResponse {
         this.createdAt = createdAt;
     }
 
-    public UserResponse getCreatedBy() {
-        return createdBy;
+    public UserResponse getOwner() {
+        return owner;
     }
 
-    public void setCreatedBy(UserResponse createdBy) {
-        this.createdBy = createdBy;
+    public void setOwner(UserResponse owner) {
+        this.owner = owner;
     }
 
-    public PollResponse getPoll() {
-        return poll;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setPoll(PollResponse poll) {
-        this.poll = poll;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public List<PollResponse> getPolls() {
+        return polls;
+    }
+
+    public void setPolls(List<PollResponse> polls) {
+        this.polls = polls;
     }
 }
