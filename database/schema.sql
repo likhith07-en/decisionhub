@@ -182,3 +182,22 @@ CREATE INDEX idx_votes_voter ON votes(voter_id);
 CREATE INDEX idx_comments_decision ON comments(decision_id);
 CREATE INDEX idx_comments_parent ON comments(parent_id);
 CREATE INDEX idx_community_members ON community_members(community_id, user_id);
+
+-- --------------------------------------------------------
+-- 17. decision_impressions (Analytics: View & Reach Tracking)
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS decision_impressions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    decision_id BIGINT NOT NULL,
+    user_id BIGINT NULL,                            -- NULL for anonymous visitors
+    ip_hash VARCHAR(64) NULL,                       -- Hashed IP for anonymous reach tracking
+    type VARCHAR(20) NOT NULL DEFAULT 'VIEW',       -- 'VIEW' or 'REACH'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_impression_type CHECK (type IN ('VIEW', 'REACH')),
+    FOREIGN KEY (decision_id) REFERENCES decisions(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Indexes on decision_impressions
+CREATE INDEX idx_impressions_decision ON decision_impressions (decision_id);
+CREATE INDEX idx_impressions_type ON decision_impressions (decision_id, type);
