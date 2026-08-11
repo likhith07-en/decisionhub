@@ -48,6 +48,9 @@ CREATE TABLE communities (
     category_id BIGINT,
     description TEXT,
     created_by BIGINT,
+    visibility VARCHAR(10) DEFAULT 'PUBLIC',    -- PUBLIC / PRIVATE
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
@@ -57,7 +60,8 @@ CREATE TABLE community_members (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     community_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
-    role VARCHAR(20) DEFAULT 'MEMBER',          -- MEMBER / MODERATOR
+    role VARCHAR(20) DEFAULT 'MEMBER',          -- OWNER / ADMIN / MEMBER / MODERATOR
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (community_id, user_id),
     FOREIGN KEY (community_id) REFERENCES communities(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -71,10 +75,12 @@ CREATE TABLE decisions (
     description TEXT,
     visibility VARCHAR(10) DEFAULT 'PUBLIC',    -- PUBLIC / PRIVATE
     category_id BIGINT,
+    community_id BIGINT NULL,                   -- NULL for general decisions, FK to communities for group decisions
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_deleted BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+    FOREIGN KEY (community_id) REFERENCES communities(id) ON DELETE SET NULL
 );
 
 -- 8. decision_options
@@ -177,11 +183,15 @@ CREATE TABLE moderation_flags (
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_decisions_owner ON decisions(owner_id);
 CREATE INDEX idx_decisions_category ON decisions(category_id);
+CREATE INDEX idx_decisions_community ON decisions(community_id);
 CREATE INDEX idx_votes_poll ON votes(poll_id);
 CREATE INDEX idx_votes_voter ON votes(voter_id);
 CREATE INDEX idx_comments_decision ON comments(decision_id);
 CREATE INDEX idx_comments_parent ON comments(parent_id);
+CREATE INDEX idx_communities_created_by ON communities(created_by);
+CREATE INDEX idx_communities_visibility ON communities(visibility);
 CREATE INDEX idx_community_members ON community_members(community_id, user_id);
+CREATE INDEX idx_community_members_user ON community_members(user_id);
 
 -- --------------------------------------------------------
 -- 17. decision_impressions (Analytics: View & Reach Tracking)

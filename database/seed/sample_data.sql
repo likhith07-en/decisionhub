@@ -21,24 +21,24 @@ INSERT INTO user_profiles (user_id, bio, avatar_url) VALUES
 (3, 'Software developer exploring career options', NULL);
 
 -- 4. Communities
-INSERT INTO communities (id, name, category_id, description, created_by) VALUES
-(1, 'Tech Leaders', 3, 'Community for software architecture and tech decisions.', 1),
-(2, 'Career Advice', 1, 'Community focused on career path decisions.', 2);
+INSERT INTO communities (id, name, category_id, description, created_by, visibility) VALUES
+(1, 'Tech Leaders', 3, 'Community for software architecture and tech decisions.', 1, 'PUBLIC'),
+(2, 'Career Advice', 1, 'Community focused on career path decisions.', 2, 'PUBLIC');
 
 -- 5. Community Members
 INSERT INTO community_members (community_id, user_id, role) VALUES
-(1, 1, 'MODERATOR'),
+(1, 1, 'OWNER'),
 (1, 3, 'MEMBER'),
-(2, 2, 'MODERATOR'),
+(2, 2, 'OWNER'),
 (2, 3, 'MEMBER');
 
 -- 6. Example Decisions (MBA vs Job, iPhone vs Samsung, Goa vs Bali, Startup vs Corporate Job, Remote vs Office Work)
-INSERT INTO decisions (id, owner_id, title, description, visibility, category_id) VALUES
-(1, 3, 'MBA vs Job', 'Should I pursue an MBA abroad or accept a senior engineering position?', 'PUBLIC', 1),
-(2, 3, 'iPhone vs Samsung', 'Choosing between iPhone 15 Pro vs Samsung Galaxy S24 Ultra.', 'PUBLIC', 3),
-(3, 2, 'Goa vs Bali', 'Best vacation destination for a 7-day tropical retreat.', 'PUBLIC', 4),
-(4, 3, 'Startup vs Corporate Job', 'Join an early-stage startup as employee #5 or stay in Big Tech?', 'PUBLIC', 1),
-(5, 2, 'Remote vs Office Work', 'Evaluate hybrid remote flexibility vs on-site collaboration.', 'PUBLIC', 6);
+INSERT INTO decisions (id, owner_id, title, description, visibility, category_id, community_id) VALUES
+(1, 3, 'MBA vs Job', 'Should I pursue an MBA abroad or accept a senior engineering position?', 'PUBLIC', 1, 2),
+(2, 3, 'iPhone vs Samsung', 'Choosing between iPhone 15 Pro vs Samsung Galaxy S24 Ultra.', 'PUBLIC', 3, 1),
+(3, 2, 'Goa vs Bali', 'Best vacation destination for a 7-day tropical retreat.', 'PUBLIC', 4, NULL),
+(4, 3, 'Startup vs Corporate Job', 'Join an early-stage startup as employee #5 or stay in Big Tech?', 'PUBLIC', 1, 2),
+(5, 2, 'Remote vs Office Work', 'Evaluate hybrid remote flexibility vs on-site collaboration.', 'PUBLIC', 6, NULL);
 
 -- 7. Decision Options
 INSERT INTO decision_options (id, decision_id, label, description) VALUES
