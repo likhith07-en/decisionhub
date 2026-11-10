@@ -214,9 +214,6 @@ All seed and test accounts in the database are configured with password: **`Pass
 | **5** | Demo User | `demo@example.com` | `Pass123` | `USER` |
 | **6** | Alice Smith | `alice@example.com` | `Pass123` | `USER` |
 | **7** | Test User | `test@example.com` | `Pass123` | `USER` |
-| **8** | Sri | `sreevidya828@gmail.com` | `Pass123` | `USER` |
-| **9** | Sri Test | `sritest@example.com` | `Pass123` | `USER` |
-| **10** | P LIKHITH KUMAR | `likhithkumar@gmail.com` | `Pass123` | `USER` |
 
 ---
 
